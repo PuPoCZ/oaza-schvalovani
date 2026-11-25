@@ -1,0 +1,96 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Plánovač lůžek Oáza klidu: veřejné čtení i zápis, ale jen data plánovače ve správném tvaru.
+    function num(v) { return v is int || v is float; }
+    function str(v, n) { return v is string && v.size() <= n; }
+
+    match /scenarios/{id} {
+      allow read, delete: if true;
+      allow create, update: if request.resource.data.keys().hasOnly(['name', 'note', 'order', 'rooms'])
+        && str(request.resource.data.name, 200)
+        && str(request.resource.data.note, 5000)
+        && num(request.resource.data.order)
+        && request.resource.data.rooms is map;
+    }
+
+    match /beds/{id} {
+      allow read, delete: if true;
+      allow create, update: if request.resource.data.keys().hasOnly(['sid', 'fk', 'x', 'y', 'rot', 'w', 'l', 'sex', 'hl', 'label'])
+        && str(request.resource.data.sid, 40)
+        && request.resource.data.fk in ['1NP', '2NP', '3NP']
+        && num(request.resource.data.x) && num(request.resource.data.y)
+        && request.resource.data.rot in [0, 90, 180, 270]
+        && num(request.resource.data.w) && num(request.resource.data.l)
+        && request.resource.data.sex in ['', 'Z', 'M']
+        && request.resource.data.hl is bool
+        && str(request.resource.data.label, 20);
+    }
+
+    match /items/{id} {
+      allow read, delete: if true;
+      allow create, update: if request.resource.data.keys().hasOnly(['sid', 'fk', 'kind', 'x', 'y', 'rot', 'w', 'l', 'label'])
+        && str(request.resource.data.sid, 40)
+        && request.resource.data.fk in ['1NP', '2NP', '3NP']
+        && request.resource.data.kind in ['skrin', 'prekazka', 'zaves', 'tv', 'stul', 'zidle']
+        && num(request.resource.data.x) && num(request.resource.data.y)
+        && (request.resource.data.rot in [0, 90, 180, 270]
+            || (request.resource.data.kind in ['zaves', 'tv'] && num(request.resource.data.rot) && request.resource.data.rot >= 0 && request.resource.data.rot < 360))
+        && num(request.resource.data.w) && num(request.resource.data.l)
+        && str(request.resource.data.label, 40);
+    }
+
+    match /config/{id} {
+      allow read: if true;
+      allow create, update: if id == 'settings'
+        && request.resource.data.keys().hasOnly(['limits', 'maxPerRoom', 'minArea']);
+    }
+
+    // Nákupy Oáza klidu: data jsou jen pod tajným klíčem z odkazu.
+    function nakupyKlic() { return "KLIC"; }
+
+    match /oaza_nakupy/{ws} {
+      allow read: if ws == nakupyKlic();
+      allow create, update: if ws == nakupyKlic()
+        && request.resource.data.keys().hasOnly(["cil", "kat"])
+        && num(request.resource.data.cil)
+        && request.resource.data.kat is list && request.resource.data.kat.size() <= 50;
+
+      match /nakupy/{id} {
+        allow read, delete: if ws == nakupyKlic();
+        allow create, update: if ws == nakupyKlic()
+          && request.resource.data.keys().hasOnly(["nazev", "dodavatel", "kat", "obj", "zap", "fak", "pozn", "pol", "dok", "vytv", "upr"])
+          && str(request.resource.data.nazev, 300) && str(request.resource.data.dodavatel, 200) && str(request.resource.data.kat, 100)
+          && str(request.resource.data.obj, 10) && str(request.resource.data.zap, 10) && str(request.resource.data.fak, 10)
+          && str(request.resource.data.pozn, 5000) && str(request.resource.data.vytv, 30) && str(request.resource.data.upr, 30)
+          && request.resource.data.pol is list && request.resource.data.pol.size() <= 500
+          && request.resource.data.dok is list && request.resource.data.dok.size() <= 100;
+      }
+    }
+
+    // Schvalování ŘD Oáza klidu: data jsou jen pod tajným klíčem z odkazu.
+    function rdKlic() { return "KLIC"; }
+
+    match /oaza_rd/{ws} {
+      match /balicky/{id} {
+        allow read: if ws == rdKlic();
+        allow create, update: if ws == rdKlic() && id.size() <= 10
+          && request.resource.data.keys().hasOnly(['kroky', 'vraceno', 'pozn', 'hist', 'upr'])
+          && request.resource.data.kroky is map && request.resource.data.kroky.size() <= 5
+          && request.resource.data.pozn is map && request.resource.data.pozn.size() <= 20
+          && request.resource.data.hist is list && request.resource.data.hist.size() <= 500
+          && (request.resource.data.vraceno == null || request.resource.data.vraceno is map)
+          && str(request.resource.data.upr, 30);
+      }
+      match /vlny/{id} {
+        allow read: if ws == rdKlic();
+        allow create, update: if ws == rdKlic() && id.size() <= 5
+          && request.resource.data.keys().hasOnly(['rozhodnuti', 'ucinnost', 'podepsano', 'seznameni', 'upr'])
+          && str(request.resource.data.rozhodnuti, 40) && str(request.resource.data.ucinnost, 10)
+          && (request.resource.data.podepsano == null || request.resource.data.podepsano is map)
+          && (request.resource.data.seznameni == null || request.resource.data.seznameni is map)
+          && str(request.resource.data.upr, 30);
+      }
+    }
+  }
+}

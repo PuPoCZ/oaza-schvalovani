@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Schvalování ŘD – Oáza klidu</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f4f5f4;
+  --surface: #ffffff;
+  --ink: #1d2427;
+  --muted: #5d686d;
+  --line: #d8dddd;
+  --line-soft: #eceff0;
+  --accent: #1f5f73;
+  --accent-soft: #e2eef1;
+  --s-jarda: #9aa5a9;
+  --s-gestor: #4f93a8;
+  --s-red: #c58a2b;
+  --s-done: #2f7a3e;
+  --red-soft: #fbf1e2;
+  --done-soft: #e5f2e7;
+  --bad: #b3261e;
+  --bad-soft: #fbe9e7;
+  --f-body: "IBM Plex Sans", "Segoe UI", Roboto, Arial, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #15191b; --surface: #1d2326; --ink: #e4e8e9; --muted: #9aa5a9; --line: #333c40; --line-soft: #283034;
+    --accent: #7fc3d6; --accent-soft: #23353b; --s-jarda: #6b777b; --s-gestor: #4d8fa3; --s-red: #e3a646; --s-done: #7fcf8c;
+    --red-soft: #33291a; --done-soft: #1d3122; --bad: #ff8a80; --bad-soft: #3a1f1d; color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 14px; line-height: 1.4; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; border: 1px solid var(--line); background: var(--surface); border-radius: 6px; padding: 5px 10px; }
+button:hover:not(:disabled) { border-color: var(--accent); }
+button:disabled { opacity: .55; cursor: default; }
+button.primary { background: var(--accent); color: var(--surface); border-color: var(--accent); font-weight: 600; }
+button.ghost { border-color: transparent; background: transparent; color: var(--muted); }
+button.ghost:hover { color: var(--ink); border-color: var(--line); }
+button.warn { color: var(--bad); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+input, textarea { border: 1px solid var(--line); background: var(--surface); border-radius: 6px; padding: 5px 8px; min-width: 0; }
+input[readonly] { background: var(--bg); }
+textarea { width: 100%; resize: vertical; min-height: 90px; }
+.muted { color: var(--muted); }
+.num { font-variant-numeric: tabular-nums; }
+[hidden] { display: none !important; }
+
+header.top { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; padding: 10px 20px; background: var(--surface); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 10; }
+header.top h1 { font-size: 16px; margin: 0; font-weight: 600; }
+header.top h1 small { font-weight: 400; color: var(--muted); margin-left: 6px; }
+.spacer { flex: 1; }
+.status { font-size: 12px; color: var(--muted); }
+.status.err { color: var(--bad); font-weight: 600; }
+#b-who b { color: var(--ink); }
+
+main { max-width: 1120px; margin: 0 auto; padding: 18px 20px 60px; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 20px; }
+.panel h2 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 0 0 10px; }
+
+.sum-top { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 18px; }
+.sum-top .big { font-size: 26px; font-weight: 700; line-height: 1.1; }
+.sum-top .of { color: var(--muted); }
+.bar { display: flex; height: 12px; border-radius: 6px; overflow: hidden; background: var(--line-soft); margin: 12px 0 10px; }
+.bar span { height: 100%; }
+.c-jarda { background: var(--s-jarda); } .c-gestor { background: var(--s-gestor); } .c-red { background: var(--s-red); } .c-done { background: var(--s-done); }
+.who-list { display: flex; flex-wrap: wrap; gap: 6px 8px; }
+.who-list span { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); }
+.who-list b { font-variant-numeric: tabular-nums; }
+.who-list .me { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.sw { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+.flow { margin: 10px 0 0; font-size: 13px; color: var(--muted); }
+
+.toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 20px 0 6px; }
+.seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; background: var(--surface); }
+.seg button { border: 0; border-radius: 0; padding: 5px 12px; border-right: 1px solid var(--line); }
+.seg button:last-child { border-right: 0; }
+.seg button.on { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.empty { padding: 30px 10px; text-align: center; color: var(--muted); }
+
+.wave { margin-top: 22px; }
+.wave-h { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 4px 12px; align-items: center; padding: 0 4px 8px; }
+.wid { font-family: var(--f-mono); font-size: 13px; color: var(--accent); background: var(--accent-soft); border-radius: 4px; padding: 3px 8px; }
+.wave-h .sq { font-size: 12.5px; color: var(--muted); font-weight: 600; }
+.wave-h h2 { margin: 0; font-size: 17px; font-weight: 600; line-height: 1.25; }
+.wstate { font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px; white-space: nowrap; background: var(--surface); color: var(--muted); border: 1px solid var(--line); }
+.wstate.sign { background: var(--red-soft); color: var(--s-red); border-color: transparent; }
+.wstate.done { background: var(--done-soft); color: var(--s-done); border-color: transparent; }
+.wave-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; padding: 8px 12px; margin: 0 0 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); font-size: 13px; }
+.wave-meta label { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); }
+.wave-meta input[type=text] { width: 130px; }
+.wave-meta input[type=date] { width: 150px; }
+.wave-meta input[type=checkbox] { width: 17px; height: 17px; accent-color: var(--accent); margin: 0; }
+.wave-meta .chk { color: var(--ink); }
+.wave-meta .rusi { flex-basis: 100%; color: var(--muted); }
+.wave-meta .rusi b { color: var(--ink); font-weight: 600; }
+.wave-meta .wn { flex-basis: 100%; color: var(--s-red); }
+
+.card { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--s-jarda); border-radius: 10px; margin-bottom: 8px; }
+.card.st-gestor { border-left-color: var(--s-gestor); }
+.card.st-red { border-left-color: var(--s-red); }
+.card.st-done { border-left-color: var(--s-done); }
+.card.mine { box-shadow: 0 0 0 1px var(--accent); }
+.card-h { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto auto; align-items: center; gap: 6px 14px; padding: 10px 14px 10px 8px; cursor: pointer; }
+.card-h .tg { border: 0; background: none; padding: 0; color: var(--muted); font-size: 12px; width: 22px; transition: transform .15s; }
+.card.open .card-h .tg { transform: rotate(90deg); }
+.card-h .name { font-weight: 600; font-size: 15px; }
+.card-h .name .bid { font-family: var(--f-mono); font-size: 12px; color: var(--muted); font-weight: 500; margin-right: 6px; }
+.card-h .sub { color: var(--muted); font-size: 13px; margin-top: 1px; }
+.prog { display: flex; align-items: center; gap: 4px; }
+.prog i { display: block; width: 26px; height: 6px; border-radius: 3px; background: var(--line); }
+.prog i.ok { background: var(--s-done); }
+.prog i.now { background: var(--accent); opacity: .45; }
+.right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; min-width: 150px; }
+.pill { font-size: 12.5px; font-weight: 600; padding: 2px 10px; border-radius: 999px; white-space: nowrap; background: var(--line-soft); color: var(--muted); }
+.pill.st-gestor { background: var(--accent-soft); color: var(--accent); }
+.pill.st-red { background: var(--red-soft); color: var(--s-red); }
+.pill.st-done { background: var(--done-soft); color: var(--s-done); }
+.act { white-space: nowrap; }
+.vr { margin: 0 14px 10px 44px; padding: 7px 10px; border-radius: 6px; background: var(--bad-soft); color: var(--bad); font-size: 13px; white-space: pre-wrap; }
+.vr b { font-weight: 600; }
+.card-b { border-top: 1px solid var(--line-soft); padding: 10px 14px 14px 44px; display: flex; flex-direction: column; gap: 12px; }
+table.docs { width: 100%; border-collapse: collapse; }
+table.docs th { font-size: 11.5px; font-weight: 600; color: var(--muted); text-align: left; padding: 0 8px 5px 0; border-bottom: 1px solid var(--line); white-space: nowrap; }
+table.docs td { padding: 6px 8px 6px 0; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+table.docs tr:last-child td { border-bottom: 0; }
+table.docs .code { font-family: var(--f-mono); font-size: 12.5px; color: var(--accent); white-space: nowrap; width: 1%; padding-top: 8px; }
+table.docs .dn { font-weight: 500; }
+table.docs .dp { font-size: 12px; color: var(--muted); }
+table.docs .r { text-align: right; white-space: nowrap; width: 1%; color: var(--muted); font-variant-numeric: tabular-nums; padding-top: 8px; }
+table.docs .note { width: 36%; }
+table.docs .note input { width: 100%; font-size: 13px; }
+table.docs .note .by { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.tl { list-style: none; margin: 0; padding: 0; font-size: 13px; }
+.tl li { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 8px; padding: 3px 0; }
+.tl .d { color: var(--muted); font-variant-numeric: tabular-nums; }
+.tl .x { color: var(--bad); white-space: pre-wrap; }
+.tl .z { color: var(--muted); }
+.row { display: flex; flex-wrap: wrap; gap: 8px; }
+.h3 { font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 0 0 4px; }
+
+.gate { max-width: 460px; margin: 12vh auto; }
+.gate h2 { text-transform: none; letter-spacing: 0; font-size: 18px; color: var(--ink); }
+.gate .row { margin-top: 12px; }
+.gate input { flex: 1; }
+.pick { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+.pick button { padding: 12px; font-size: 15px; font-weight: 600; }
+.pick button small { display: block; font-weight: 400; color: var(--muted); font-size: 12.5px; }
+
+dialog { border: 1px solid var(--line); border-radius: 12px; padding: 0; width: min(560px, 94vw); background: var(--surface); color: var(--ink); }
+dialog::backdrop { background: rgba(0, 0, 0, .35); }
+.dlg-h { display: flex; align-items: center; padding: 14px 18px; border-bottom: 1px solid var(--line); }
+.dlg-h h2 { margin: 0; font-size: 16px; font-weight: 600; }
+.dlg-b { padding: 14px 18px 18px; display: flex; flex-direction: column; gap: 10px; }
+.dlg-b label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--muted); }
+.link-row { display: grid; grid-template-columns: 70px minmax(0, 1fr) auto; gap: 8px; align-items: center; }
+.link-row input { font-size: 12.5px; }
+.hint { font-size: 12.5px; color: var(--muted); margin: 0; }
+
+#toast { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); background: var(--ink); color: var(--surface); padding: 8px 14px; border-radius: 8px; font-size: 13px; opacity: 0; transition: opacity .2s; pointer-events: none; z-index: 50; }
+#toast.on { opacity: .95; }
+
+@media (max-width: 760px) {
+  header.top { padding: 8px 12px; }
+  main { padding: 12px 10px 50px; }
+  .card-h { grid-template-columns: 22px minmax(0, 1fr); }
+  .card-h .prog { grid-column: 2; }
+  .card-h .right { grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: flex-start; padding-left: 28px; min-width: 0; }
+  .card-b { padding-left: 14px; }
+  .vr { margin-left: 14px; }
+  table.docs thead { display: none; }
+  table.docs, table.docs tbody, table.docs tr, table.docs td { display: block; width: 100%; }
+  table.docs tr { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 2px 8px; padding: 7px 0; border-bottom: 1px solid var(--line-soft); }
+  table.docs td { border: 0; padding: 0; }
+  table.docs .code { padding-top: 2px; } table.docs .r { padding-top: 2px; }
+  table.docs .r.v { display: none; }
+  table.docs .note { grid-column: 1 / -1; width: 100%; padding-top: 4px; }
+  .wave-meta input[type=text], .wave-meta input[type=date] { width: 140px; }
+  .link-row { grid-template-columns: 1fr auto; }
+  .link-row span { grid-column: 1 / -1; }
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>Schvalování ŘD<small>Oáza klidu</small></h1>
+  <span class="spacer"></span>
+  <span class="status" id="status"></span>
+  <button type="button" class="ghost" id="b-links" hidden>Odkazy</button>
+  <button type="button" class="ghost" id="b-who" hidden></button>
+</header>
+
+<div id="gate" hidden>
+  <section class="panel gate">
+    <h2>Schvalování řízené dokumentace</h2>
+    <p id="gate-msg">Pro přístup potřebujete odkaz s klíčem. Požádejte o něj Jaroslava Pokorného, nebo klíč vložte sem.</p>
+    <form class="row" id="gate-form"><input id="gate-key" placeholder="Klíč" autocomplete="off"><button class="primary">Otevřít</button></form>
+  </section>
+</div>
+
+<div id="who" hidden>
+  <section class="panel gate">
+    <h2>Kdo jste?</h2>
+    <p class="muted" style="margin:0">Podle toho appka ukáže, co čeká na vás, a zapíše, kdo co potvrdil.</p>
+    <div class="pick" id="pick"></div>
+  </section>
+</div>
+
+<main id="main" hidden>
+  <section class="panel" id="sum"></section>
+  <div class="toolbar"><div class="seg" id="filter"></div></div>
+  <div id="waves"></div>
+</main>
+
+<dialog id="dlg-ret">
+  <div class="dlg-h"><h2 id="ret-title">Vrátit s připomínkami</h2><span class="spacer"></span><button type="button" class="ghost" data-close>Zavřít</button></div>
+  <form class="dlg-b" id="ret-form" method="dialog">
+    <p class="hint" id="ret-hint"></p>
+    <label>Co je potřeba opravit<textarea id="ret-text" required></textarea></label>
+    <div class="row"><button class="primary" id="ret-ok">Vrátit</button><button type="button" data-close>Zrušit</button></div>
+  </form>
+</dialog>
+
+<dialog id="dlg-links">
+  <div class="dlg-h"><h2>Odkazy pro gestory</h2><span class="spacer"></span><button type="button" class="ghost" data-close>Zavřít</button></div>
+  <div class="dlg-b" id="links"></div>
+</dialog>
+
+<div id="toast"></div>
+
+<script type="application/json" id="data">{"waves":[{"id":"A","sq":"SQ 7 a 2","t":"Stížnosti a ochrana práv","dec":"ŘD-01/2026","rusi":"Standard kvality č. 2 a č. 7 (2025), dosavadní domácí řád, pravidla k restriktivním opatřením, stížnostem a darům","note":""},{"id":"B","sq":"SQ 14","t":"Nouzové a havarijní situace","dec":"ŘD-02/2026","rusi":"Standard kvality č. 14 (2025), Pravidla pro nouzové a havarijní situace","note":""},{"id":"C","sq":"SQ 3, 11 a 12","t":"Zájemce, dostupnost a informovanost","dec":"ŘD-03/2026","rusi":"Standard kvality č. 3, č. 11 a č. 12 (2025)","note":""},{"id":"D","sq":"SQ 5, 6 a 8","t":"Plánování, dokumentace a návaznost","dec":"ŘD-04/2026","rusi":"Standard kvality č. 5, č. 6 a č. 8 (2025)","note":""},{"id":"E","sq":"SQ 4","t":"Smlouva","dec":"ŘD-05/2026","rusi":"Standard kvality č. 4 (2025), dosavadní vzor smlouvy","note":"Čeká na právní konzultaci smlouvy."},{"id":"F","sq":"SQ 9, 10 a 15","t":"Personál, rozvoj a kvalita","dec":"ŘD-06/2026","rusi":"Standard kvality č. 9, č. 10 a č. 15 (2025), Mzdový řád 2025","note":""},{"id":"G","sq":"SQ 13","t":"Prostředí a podmínky","dec":"ŘD-07/2026","rusi":"Standard kvality č. 13 (2025)","note":"Provozní řád ORG-11 se vydává až po vyjádření KHS."},{"id":"H","sq":"SQ 1","t":"Cíle a pracovní postupy","dec":"ŘD-08/2026","rusi":"Standard kvality č. 1 (2025), dosavadní ošetřovatelské a pracovní postupy přímé péče","note":""},{"id":"I","sq":"Mimo standardy","t":"Zdravotní úsek","dec":"ŘD-09/2026","rusi":"zbývající zdravotní pravidla staré dokumentace (léky, standardní operační postupy)","note":""},{"id":"J","sq":"Mimo standardy","t":"Ekonomika a závěrečné zrušení","dec":"ŘD-10/2026","rusi":"celá zbývající předreorganizační ŘD","note":""},{"id":"X","sq":"Samostatně","t":"Mimo vlny","dec":"","rusi":"","note":"Sazebník ředitelka podepisuje samostatně jako přílohu dodatku ke smlouvě."}],"balicky":[{"id":"A1","w":"A","t":"Rámec","g":"jarda","d":["ORG-02","F-20"]},{"id":"A2","w":"A","t":"Stížnosti","g":"dasa","d":["SOC-08","KLI-02","F-04","SQ-07"]},{"id":"A3","w":"A","t":"Ochrana práv","g":"dasa","d":["SOC-03","SQ-02"]},{"id":"A4","w":"A","t":"Omezení pohybu a postranice","g":"helca","d":["F-06","F-30","F-31","F-08"]},{"id":"A5","w":"A","t":"Osobní údaje a fotografie","g":"jarda","d":["ORG-05","F-21","F-22","F-23","F-29"]},{"id":"A6","w":"A","t":"Peníze a dary klientů","g":"jarda","d":["ORG-07","F-19","F-24"]},{"id":"A7","w":"A","t":"Vzdělávání a zaškolení","g":"jitka","d":["ORG-13","F-17"]},{"id":"A8","w":"A","t":"Domácí řád","g":"dasa","d":["KLI-01"]},{"id":"B1","w":"B","t":"Nouzové situace a pády","g":"helca","d":["SOC-10","ZDR-03","ZDR-04","F-26","SQ-14"]},{"id":"B2","w":"B","t":"BOZP a požární ochrana","g":"jitka","d":["ORG-09"]},{"id":"B3","w":"B","t":"Hodnocení kvality","g":"dasa","d":["SOC-11"]},{"id":"C1","w":"C","t":"Veřejný závazek a dostupnost","g":"dasa","d":["SOC-01","SQ-11"]},{"id":"C2","w":"C","t":"Informace o službě","g":"jitka","d":["KLI-04","SQ-12"]},{"id":"C3","w":"C","t":"Zájemce a jednání","g":"dasa","d":["SOC-04","F-11","F-10","F-05","F-01","SQ-03"]},{"id":"C4","w":"C","t":"Uzavření smlouvy (postup)","g":"dasa","d":["SOC-05"]},{"id":"C5","w":"C","t":"Personální zajištění a profily pozic","g":"jitka","d":["ORG-12"]},{"id":"D1","w":"D","t":"Průběh služby a návaznost","g":"dasa","d":["SOC-02","SOC-09","SQ-08"]},{"id":"D2","w":"D","t":"Individuální plánování","g":"dasa","d":["SOC-06","F-03","F-14","F-25","SQ-05"]},{"id":"D3","w":"D","t":"Dokumentace o klientech","g":"dasa","d":["SOC-07","SQ-06"]},{"id":"D4","w":"D","t":"Spisy, skartace a záznamy o zpracování","g":"jarda","d":["ORG-06","F-09"]},{"id":"D5","w":"D","t":"Zdravotnická dokumentace","g":"helca","d":["ZDR-02","F-32"]},{"id":"E1","w":"E","t":"Smlouva","g":"jarda","d":["F-02","SQ-04"]},{"id":"F1","w":"F","t":"Organizační řád","g":"jitka","d":["ORG-01","SQ-09"]},{"id":"F2","w":"F","t":"Hodnocení a rozvoj zaměstnanců","g":"jitka","d":["F-15","F-16","SQ-10"]},{"id":"F3","w":"F","t":"Mzdy a odchod zaměstnance","g":"jarda","d":["ORG-04","F-28"]},{"id":"F4","w":"F","t":"Zvyšování kvality","g":"dasa","d":["F-13","F-18","SQ-15"]},{"id":"G1","w":"G","t":"Provozně-technické směrnice","g":"jitka","d":["ORG-10","SQ-13"]},{"id":"G2","w":"G","t":"Provozní řád (KHS)","g":"jitka","d":["ORG-11"]},{"id":"G3","w":"G","t":"Hygienická péče","g":"helca","d":["ZDR-05"]},{"id":"H1","w":"H","t":"Pracovní řád a etický kodex","g":"jarda","d":["ORG-03"]},{"id":"H2","w":"H","t":"Přímá péče: rámec a sociální postupy","g":"dasa","d":["SOC-12","PP-13","PP-14","PP-15","SQ-01"]},{"id":"H3","w":"H","t":"Postupy: jídlo, hygiena, oblékání","g":"helca","d":["PP-03","PP-04","PP-05","PP-06","PP-09"]},{"id":"H4","w":"H","t":"Postupy: vyprazdňování, kůže, pohyb, sledování","g":"helca","d":["PP-07","PP-08","PP-10","PP-11","PP-12"]},{"id":"H5","w":"H","t":"Postupy: úklid a prádlo","g":"jitka","d":["PP-01","PP-02"]},{"id":"I1","w":"I","t":"Podávání léčiv","g":"helca","d":["ZDR-01","F-27"]},{"id":"I2","w":"I","t":"Dekubity, výživa, paliativní péče","g":"helca","d":["ZDR-06","ZDR-07","ZDR-08"]},{"id":"I3","w":"I","t":"OS: rámec, měření a odběry","g":"helca","d":["ZDR-09","OS-01","OS-02","OS-03"]},{"id":"I4","w":"I","t":"OS: injekce a místní aplikace léků","g":"helca","d":["OS-04","OS-05","OS-11"]},{"id":"I5","w":"I","t":"OS: rány, bandáže, stomie","g":"helca","d":["OS-06","OS-12","OS-10"]},{"id":"I6","w":"I","t":"OS: katétr, sonda, klyzma, dýchací cesty","g":"helca","d":["OS-07","OS-08","OS-09","OS-13"]},{"id":"J1","w":"J","t":"Účetnictví a hotovost klientů","g":"jarda","d":["ORG-08","F-07"]},{"id":"X1","w":"X","t":"Sazebník","g":"jarda","d":["KLI-03"]}],"docs":{"ORG-02":{"n":"Řízení dokumentace","v":"0.15","s":5,"x":false,"p":"Příloha A Slovník"},"F-20":{"n":"Listina seznámení s dokumenty","v":"0.4","s":4,"x":false,"p":""},"SOC-08":{"n":"Stížnosti","v":"0.11","s":5,"x":false,"p":""},"KLI-02":{"n":"Jak podat stížnost","v":"0.10","s":3,"x":false,"p":"Příloha 1 Plakát"},"F-04":{"n":"Záznam a evidence stížností","v":"0.5","s":4,"x":false,"p":"záznam a evidence"},"SQ-07":{"n":"Krycí list SQ 7 (Stížnosti)","v":"0.5","s":2,"x":false,"p":""},"SOC-03":{"n":"Ochrana práv a opatření omezující pohyb","v":"0.11","s":9,"x":false,"p":""},"SQ-02":{"n":"Krycí list SQ 2 (Ochrana práv)","v":"0.5","s":2,"x":false,"p":""},"F-06":{"n":"Záznam a evidence opatření omezujících pohyb","v":"0.4","s":2,"x":false,"p":"záznam a evidence"},"F-30":{"n":"Posouzení postranice","v":"0.3","s":1,"x":false,"p":""},"F-31":{"n":"Seznam klientů s postranicí","v":"0.2","s":1,"x":false,"p":""},"F-08":{"n":"Záznam o mimořádné události","v":"0.3","s":1,"x":false,"p":""},"ORG-05":{"n":"Ochrana osobních údajů","v":"0.12","s":8,"x":false,"p":"Příloha A Kamery"},"F-21":{"n":"Informace o zpracování osobních údajů (klienti)","v":"0.66","s":3,"x":false,"p":""},"F-22":{"n":"Informace o zpracování osobních údajů (zaměstnanci)","v":"0.23","s":2,"x":false,"p":""},"F-23":{"n":"Souhlas s pořizováním a zveřejňováním fotografií a videozáznamů","v":"0.4","s":2,"x":false,"p":""},"F-29":{"n":"Evidence souhlasů s fotografiemi a videozáznamy","v":"0.3","s":0,"x":true,"p":""},"ORG-07":{"n":"Depozita klientů","v":"0.5","s":3,"x":false,"p":""},"F-19":{"n":"Evidence darů","v":"0.1","s":0,"x":true,"p":""},"F-24":{"n":"Darovací smlouva","v":"0.1","s":1,"x":false,"p":""},"ORG-13":{"n":"Vzdělávání, hodnocení a supervize","v":"0.9","s":5,"x":false,"p":"Příloha A Kontrakt se supervizorem"},"F-17":{"n":"Adaptační (zaškolovací) plán nového zaměstnance","v":"0.7","s":2,"x":false,"p":""},"KLI-01":{"n":"Domácí řád","v":"0.8","s":7,"x":false,"p":"Příloha A Ve zkratce"},"SOC-10":{"n":"Nouzové a havarijní situace","v":"0.10","s":7,"x":false,"p":"Příloha P1 Záskoky"},"ZDR-03":{"n":"Hlášení mimořádných událostí","v":"0.7","s":2,"x":false,"p":""},"ZDR-04":{"n":"Prevence pádů","v":"0.8","s":3,"x":false,"p":""},"F-26":{"n":"Evidence pádů","v":"0.1","s":0,"x":true,"p":""},"SQ-14":{"n":"Krycí list SQ 14 (Nouzové a havarijní situace)","v":"0.4","s":2,"x":false,"p":""},"ORG-09":{"n":"BOZP a požární ochrana","v":"0.7","s":3,"x":false,"p":"přílohy od OZO"},"SOC-11":{"n":"Hodnocení kvality a spokojenosti","v":"0.8","s":5,"x":false,"p":""},"SOC-01":{"n":"Veřejný závazek","v":"0.9","s":4,"x":false,"p":""},"SQ-11":{"n":"Krycí list SQ 11 (Dostupnost)","v":"0.4","s":2,"x":false,"p":""},"KLI-04":{"n":"Informace o službě","v":"0.9","s":3,"x":false,"p":""},"SQ-12":{"n":"Krycí list SQ 12 (Informovanost)","v":"0.4","s":2,"x":false,"p":""},"SOC-04":{"n":"Jednání se zájemcem a odmítnutí","v":"0.7","s":4,"x":false,"p":""},"F-11":{"n":"Záznam z jednání se zájemcem o sociální službu","v":"0.3","s":1,"x":false,"p":""},"F-10":{"n":"Evidence žadatelů a odmítnutí","v":"0.1","s":0,"x":true,"p":""},"F-05":{"n":"Evidence vážně míněných nesouhlasů","v":"0.1","s":0,"x":true,"p":""},"F-01":{"n":"Žádost, vyjádření lékaře a dotazník zvyklostí","v":"0.2","s":8,"x":false,"p":"žádost, vyjádření lékaře, dotazník"},"SQ-03":{"n":"Krycí list SQ 3 (Jednání se zájemcem)","v":"0.4","s":2,"x":false,"p":""},"SOC-05":{"n":"Smlouva s klientem","v":"0.8","s":5,"x":false,"p":""},"ORG-12":{"n":"Personální zajištění a zaškolování","v":"0.7","s":20,"x":false,"p":"Příloha A Profily pozic"},"SOC-02":{"n":"Průběh poskytování služby","v":"0.9","s":7,"x":false,"p":""},"SOC-09":{"n":"Návaznost na další zdroje","v":"0.8","s":3,"x":false,"p":""},"SQ-08":{"n":"Krycí list SQ 8 (Návaznost)","v":"0.4","s":2,"x":false,"p":""},"SOC-06":{"n":"Individuální plánování","v":"0.11","s":6,"x":false,"p":""},"F-03":{"n":"Individuální plán","v":"0.6","s":3,"x":false,"p":""},"F-14":{"n":"Biografická anamnéza klienta","v":"0.1","s":1,"x":false,"p":""},"F-25":{"n":"Seznam klíčových pracovníků","v":"0.3","s":2,"x":false,"p":""},"SQ-05":{"n":"Krycí list SQ 5 (Individuální plánování)","v":"0.4","s":3,"x":false,"p":""},"SOC-07":{"n":"Dokumentace o klientech","v":"0.9","s":5,"x":false,"p":""},"SQ-06":{"n":"Krycí list SQ 6 (Dokumentace)","v":"0.5","s":2,"x":false,"p":""},"ORG-06":{"n":"Spisový a skartační řád","v":"0.9","s":5,"x":false,"p":""},"F-09":{"n":"Záznamy o činnostech zpracování","v":"0.2","s":0,"x":true,"p":""},"ZDR-02":{"n":"Zdravotnická dokumentace","v":"0.7","s":3,"x":false,"p":""},"F-32":{"n":"Určení osob pro informace o zdravotním stavu","v":"0.2","s":1,"x":false,"p":""},"F-02":{"n":"Smlouva o poskytnutí služby","v":"0.10","s":7,"x":false,"p":""},"SQ-04":{"n":"Krycí list SQ 4 (Smlouva)","v":"0.5","s":2,"x":false,"p":""},"ORG-01":{"n":"Organizační řád","v":"0.10","s":13,"x":false,"p":""},"SQ-09":{"n":"Krycí list SQ 9 (Personální zajištění)","v":"0.4","s":2,"x":false,"p":""},"F-15":{"n":"Hodnocení zaměstnance – sebehodnocení a záznam z pohovoru","v":"0.4","s":1,"x":false,"p":""},"F-16":{"n":"Individuální vzdělávací plán","v":"0.3","s":1,"x":false,"p":""},"SQ-10":{"n":"Krycí list SQ 10 (Profesní rozvoj)","v":"0.4","s":3,"x":false,"p":""},"ORG-04":{"n":"Mzdový předpis","v":"0.6","s":8,"x":false,"p":""},"F-28":{"n":"Výstupní list zaměstnance","v":"0.2","s":2,"x":false,"p":""},"F-13":{"n":"Registr rizik a pochybení","v":"0.2","s":2,"x":false,"p":""},"F-18":{"n":"Dotazník spokojenosti pro rodinu a blízké","v":"0.2","s":1,"x":false,"p":""},"SQ-15":{"n":"Krycí list SQ 15 (Zvyšování kvality)","v":"0.4","s":3,"x":false,"p":""},"ORG-10":{"n":"Provozně-technické směrnice","v":"0.4","s":3,"x":false,"p":""},"SQ-13":{"n":"Krycí list SQ 13 (Prostředí a podmínky)","v":"0.4","s":2,"x":false,"p":""},"ORG-11":{"n":"Provozní řád","v":"0.95","s":19,"x":false,"p":"Přílohy B a C"},"ZDR-05":{"n":"Hygienická péče o klienty","v":"0.6","s":2,"x":false,"p":""},"ORG-03":{"n":"Pracovní řád","v":"0.5","s":13,"x":false,"p":"Příloha A Etický kodex"},"SOC-12":{"n":"Pracovní postupy přímé péče","v":"0.2","s":5,"x":false,"p":""},"PP-13":{"n":"Kontakt s rodinou a okolím","v":"0.2","s":3,"x":false,"p":""},"PP-14":{"n":"Aktivizační a socioterapeutické činnosti","v":"0.2","s":3,"x":false,"p":""},"PP-15":{"n":"Korespondence a osobní záležitosti klienta","v":"0.2","s":2,"x":false,"p":""},"SQ-01":{"n":"Krycí list SQ 1 (Cíle a způsoby poskytování)","v":"0.6","s":2,"x":false,"p":""},"PP-03":{"n":"Podávání jídla a pití","v":"0.1","s":2,"x":false,"p":""},"PP-04":{"n":"Ranní vstávání a večerní uléhání","v":"0.1","s":3,"x":false,"p":""},"PP-05":{"n":"Koupel, sprchování a hygiena na lůžku","v":"0.1","s":3,"x":false,"p":""},"PP-06":{"n":"Péče o vlasy, nehty a holení","v":"0.1","s":2,"x":false,"p":""},"PP-09":{"n":"Oblékání a obouvání","v":"0.2","s":2,"x":false,"p":""},"PP-07":{"n":"Vyprazdňování, inkontinence a sběrný sáček","v":"0.1","s":3,"x":false,"p":""},"PP-08":{"n":"Péče o pokožku a drobná poranění","v":"0.1","s":2,"x":false,"p":""},"PP-10":{"n":"Přesuny, polohování, pohyb a kompenzační pomůcky","v":"0.2","s":3,"x":false,"p":""},"PP-11":{"n":"Sledování stavu klienta a hlášení změn","v":"0.2","s":3,"x":false,"p":""},"PP-12":{"n":"Komunikace s klientem s poruchou sluchu, zraku a řeči","v":"0.1","s":3,"x":false,"p":""},"PP-01":{"n":"Úklid pokoje a osobní věci klienta","v":"0.1","s":2,"x":false,"p":""},"PP-02":{"n":"Osobní prádlo klienta","v":"0.1","s":2,"x":false,"p":""},"ZDR-01":{"n":"Podávání léčiv","v":"0.4","s":13,"x":false,"p":""},"F-27":{"n":"Evidence návykových látek","v":"0.1","s":0,"x":true,"p":""},"ZDR-06":{"n":"Prevence dekubitů","v":"0.6","s":2,"x":false,"p":""},"ZDR-07":{"n":"Stravování a nutriční péče","v":"0.7","s":3,"x":false,"p":""},"ZDR-08":{"n":"Paliativní péče a úmrtí","v":"0.6","s":3,"x":false,"p":""},"ZDR-09":{"n":"Ošetřovatelské standardy","v":"0.3","s":5,"x":false,"p":"Příloha A Osnova"},"OS-01":{"n":"Měření fyziologických funkcí","v":"0.2","s":3,"x":false,"p":""},"OS-02":{"n":"Odběr žilní krve","v":"0.1","s":3,"x":false,"p":""},"OS-03":{"n":"Měření glykémie glukometrem","v":"0.2","s":3,"x":false,"p":""},"OS-04":{"n":"Aplikace injekce do svalu","v":"0.1","s":3,"x":false,"p":""},"OS-05":{"n":"Aplikace injekce pod kůži","v":"0.2","s":3,"x":false,"p":""},"OS-11":{"n":"Léky do oka, ucha a nosu","v":"0.2","s":3,"x":false,"p":""},"OS-06":{"n":"Převazy a péče o rány","v":"0.1","s":3,"x":false,"p":""},"OS-12":{"n":"Bandáže dolních končetin","v":"0.2","s":3,"x":false,"p":""},"OS-10":{"n":"Péče o stomie","v":"0.1","s":3,"x":false,"p":""},"OS-07":{"n":"Péče o permanentní močový katétr","v":"0.2","s":3,"x":false,"p":""},"OS-08":{"n":"Péče o PEG a výživa sondou","v":"0.1","s":3,"x":false,"p":""},"OS-09":{"n":"Aplikace klyzmatu","v":"0.1","s":3,"x":false,"p":""},"OS-13":{"n":"Odsávání a oxygenoterapie","v":"0.2","s":3,"x":false,"p":""},"ORG-08":{"n":"Účetní směrnice","v":"0.5","s":5,"x":false,"p":""},"F-07":{"n":"Hotovostní deník a soupis cenností","v":"0.1","s":0,"x":true,"p":""},"KLI-03":{"n":"Sazebník úhrad","v":"0.3","s":2,"x":false,"p":""}}}</script>
+<script type="module">
+const DATA = JSON.parse(document.getElementById('data').textContent);
+const FIREBASE = {"apiKey": "AIzaSyDowhduH6_0zkbfVn_VDKVS3Ztz6XJqjto", "authDomain": "oaza-luzka.firebaseapp.com", "projectId": "oaza-luzka", "storageBucket": "oaza-luzka.firebasestorage.app", "messagingSenderId": "780576871450", "appId": "1:780576871450:web:d68c472bb326e29889ada3"};
+const ROOT = 'oaza_rd';
+const LS_KEY = 'oaza-rd-klic', LS_USER = 'oaza-rd-kdo', LS_DEMO = 'oaza-rd-demo', LS_FILTER = 'oaza-rd-filtr';
+// n: 1. pád, g: 2. pád (u koho), a: 4. pád (čeká na koho), d: 3. pád (komu), m: mužský rod
+const P = {
+  dasa: { n: 'Dáša', g: 'Dáši', a: 'Dášu', d: 'Dáše', role: 'sociální úsek' },
+  helca: { n: 'Helča', g: 'Helči', a: 'Helču', d: 'Helče', role: 'vrchní sestra' },
+  jitka: { n: 'Jitka', g: 'Jitky', a: 'Jitku', d: 'Jitce', role: 'ředitelka' },
+  jarda: { n: 'Jarda', g: 'Jardy', a: 'Jardu', d: 'Jardovi', role: 'správce dokumentace', m: true },
+};
+const PEOPLE = ['dasa', 'helca', 'jitka', 'jarda'];
+const BAL = DATA.balicky, DOCS = DATA.docs, WAVES = DATA.waves;
+const BY_ID = Object.fromEntries(BAL.map(b => [b.id, b]));
+
+const S = { bal: {}, vlny: {}, ready: { b: false, v: false }, open: new Set(), busy: new Set(), user: null, filter: null, pending: false };
+let api = null;
+const $ = (s, el = document) => el.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const plural = (n, a, b, c) => `${n} ${n === 1 ? a : n >= 2 && n <= 4 ? b : c}`;
+const nowIso = () => new Date().toISOString();
+const dm = iso => { const d = new Date(iso); return isNaN(d) ? '' : `${d.getDate()}. ${d.getMonth() + 1}.` + (d.getFullYear() !== new Date().getFullYear() ? ` ${d.getFullYear()}` : ''); };
+const full = iso => { const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleString('cs-CZ'); };
+const vb = (u, base) => P[u]?.m ? base : base.replace(/l$/, 'la');
+
+// ---------- kroky ----------
+function steps(b) {
+  if (b.g === 'jarda') return ['precteno', 'predano', 'reditelka'];
+  if (b.g === 'jitka') return ['precteno', 'odeslano', 'reditelka'];
+  return ['precteno', 'odeslano', 'gestor', 'predano', 'reditelka'];
+}
+const actor = (b, k) => (k === 'precteno' || k === 'odeslano') ? 'jarda' : k === 'reditelka' ? 'jitka' : b.g;
+function stepName(b, k) {
+  const g = P[b.g];
+  return { precteno: 'Jarda pročetl', odeslano: `Posláno ${g.d}`, gestor: `${g.n} ${vb(b.g, 'schválil')}`,
+    predano: `${g.n} ${vb(b.g, 'předal')} ředitelce`, reditelka: 'Ředitelka schválila' }[k];
+}
+function actName(b, k) {
+  return { precteno: 'Pročetl jsem', odeslano: `Poslal jsem ${P[b.g].d}`, gestor: 'Schvaluji',
+    predano: 'Předávám ředitelce', reditelka: 'Schvaluji' }[k];
+}
+const emptyBal = () => ({ kroky: {}, vraceno: null, pozn: {}, hist: [], upr: '' });
+const emptyVlna = () => ({ rozhodnuti: '', ucinnost: '', podepsano: null, seznameni: null, upr: '' });
+const st = id => S.bal[id] || emptyBal();
+const nextStep = b => steps(b).find(k => !st(b.id).kroky?.[k]) || null;
+const holder = b => { const k = nextStep(b); return k ? actor(b, k) : null; };
+function stage(b) {
+  const k = nextStep(b);
+  if (!k) return 'done';
+  if (k === 'reditelka') return 'red';
+  return actor(b, k) === 'jarda' ? 'jarda' : 'gestor';
+}
+function pillText(b) {
+  const k = nextStep(b);
+  if (!k) return 'Schváleno';
+  if (k === 'reditelka') return 'U ředitelky';
+  return 'U ' + P[actor(b, k)].g;
+}
+const pages = b => b.d.reduce((s, c) => s + (DOCS[c]?.s || 0), 0);
+const lastDone = b => { const ks = steps(b).filter(k => st(b.id).kroky?.[k]); return ks.length ? ks[ks.length - 1] : null; };
+
+function waveState(w) {
+  const list = BAL.filter(b => b.w === w.id), done = list.filter(b => stage(b) === 'done').length;
+  const v = S.vlny[w.id] || emptyVlna();
+  if (done < list.length) return [`${done} z ${list.length} schváleno ředitelkou`, ''];
+  if (w.id === 'X') return ['Hotovo', 'done'];
+  if (!v.podepsano) return ['K podpisu rozhodnutí', 'sign'];
+  if (!v.seznameni) return ['Podepsáno, chybí seznámení', 'sign'];
+  return ['Hotovo', 'done'];
+}
+
+// ---------- vykreslení ----------
+function renderSum() {
+  const cnt = { jarda: 0, gestor: 0, red: 0, done: 0 }, wait = Object.fromEntries(PEOPLE.map(p => [p, 0]));
+  for (const b of BAL) { cnt[stage(b)]++; const h = holder(b); if (h) wait[h]++; }
+  const n = BAL.length, pct = v => (v / n * 100).toFixed(2) + '%';
+  const me = S.user;
+  $('#sum').innerHTML = `
+    <div class="sum-top"><span class="big num">${cnt.done} z ${n}</span><span class="of">balíčků schválených ředitelkou</span></div>
+    <div class="bar" role="img" aria-label="Stav balíčků">
+      <span class="c-done" style="width:${pct(cnt.done)}"></span><span class="c-red" style="width:${pct(cnt.red)}"></span>
+      <span class="c-gestor" style="width:${pct(cnt.gestor)}"></span><span class="c-jarda" style="width:${pct(cnt.jarda)}"></span></div>
+    <div class="who-list">
+      <span><i class="sw c-jarda"></i>U Jardy <b>${cnt.jarda}</b></span>
+      <span><i class="sw c-gestor"></i>U gestorů <b>${cnt.gestor}</b></span>
+      <span><i class="sw c-red"></i>U ředitelky <b>${cnt.red}</b></span>
+      <span><i class="sw c-done"></i>Schváleno <b>${cnt.done}</b></span>
+    </div>
+    <div class="who-list" style="margin-top:8px">${PEOPLE.map(p => `<span class="${p === me ? 'me' : ''}">Čeká na ${P[p].a} <b>${wait[p]}</b></span>`).join('')}</div>
+    <p class="flow">Postup: Jarda pročte → pošle gestorovi → gestor schválí → předá ředitelce → ředitelka schválí. Kdo má balíček na stole, může ho vrátit s připomínkami.</p>`;
+}
+
+function renderFilter() {
+  const mine = BAL.filter(b => holder(b) === S.user).length;
+  const opts = [['mine', `Čeká na mě (${mine})`], ['all', 'Vše'], ...PEOPLE.map(p => ['g:' + p, P[p].n]), ['done', 'Schválené']];
+  $('#filter').innerHTML = opts.map(([v, l]) => `<button type="button" data-f="${v}" class="${S.filter === v ? 'on' : ''}">${esc(l)}</button>`).join('');
+}
+function visible(b) {
+  const f = S.filter;
+  if (f === 'all') return true;
+  if (f === 'mine') return holder(b) === S.user;
+  if (f === 'done') return stage(b) === 'done';
+  if (f.startsWith('g:')) return b.g === f.slice(2);
+  return true;
+}
+const canWave = () => S.user === 'jarda' || S.user === 'jitka';
+
+function renderWave(w, list) {
+  const v = S.vlny[w.id] || emptyVlna();
+  const [txt, cls] = waveState(w);
+  const ro = canWave() ? '' : 'disabled';
+  const meta = w.id === 'X' ? (w.note ? `<div class="wave-meta"><span class="wn">${esc(w.note)}</span></div>` : '') : `
+    <div class="wave-meta" data-w="${w.id}">
+      <label>Rozhodnutí č. <input type="text" data-wf="rozhodnuti" value="${esc(v.rozhodnuti)}" placeholder="${esc(w.dec)}" ${ro}></label>
+      <label>Účinnost od <input type="date" data-wf="ucinnost" value="${esc(v.ucinnost)}" ${ro}></label>
+      <label class="chk"><input type="checkbox" data-wc="podepsano" ${v.podepsano ? 'checked' : ''} ${ro}> Podepsáno${v.podepsano ? ` <span class="muted">${dm(v.podepsano.t)}</span>` : ''}</label>
+      <label class="chk"><input type="checkbox" data-wc="seznameni" ${v.seznameni ? 'checked' : ''} ${ro}> Zaměstnanci seznámeni${v.seznameni ? ` <span class="muted">${dm(v.seznameni.t)}</span>` : ''}</label>
+      ${w.rusi ? `<span class="rusi"><b>Ruší:</b> ${esc(w.rusi)}</span>` : ''}
+      ${w.note ? `<span class="wn">${esc(w.note)}</span>` : ''}
+    </div>`;
+  return `<section class="wave" id="w-${w.id}">
+    <div class="wave-h"><span class="wid">${w.id === 'X' ? '–' : w.id}</span>
+      <div><div class="sq">${esc(w.sq)}</div><h2>${esc(w.t)}</h2></div>
+      <span class="wstate ${cls}">${esc(txt)}</span></div>
+    ${meta}
+    ${list.map(renderCard).join('')}
+  </section>`;
+}
+
+function renderCard(b) {
+  const s = st(b.id), sg = stage(b), k = nextStep(b), h = holder(b), open = S.open.has(b.id);
+  const ks = steps(b), busy = S.busy.has(b.id);
+  const dots = ks.map(x => `<i class="${s.kroky?.[x] ? 'ok' : x === k ? 'now' : ''}" title="${esc(stepName(b, x))}${s.kroky?.[x] ? ' · ' + dm(s.kroky[x].t) : ''}"></i>`).join('');
+  let act = '';
+  if (k && S.user === h) act = `<button type="button" class="primary act" data-act="${k}" ${busy ? 'disabled' : ''}>${esc(actName(b, k))}</button>`;
+  const ndoc = b.d.length, pg = pages(b);
+  const sub = `Gestor: ${P[b.g].n} · ${plural(ndoc, 'dokument', 'dokumenty', 'dokumentů')}${pg ? ` · ${plural(pg, 'strana', 'strany', 'stran')}` : ''}`;
+  const vr = s.vraceno ? `<div class="vr"><b>Vrátil${P[s.vraceno.u]?.m ? '' : 'a'} ${esc(P[s.vraceno.u]?.n || '')} ${dm(s.vraceno.t)}:</b> ${esc(s.vraceno.x)}</div>` : '';
+  return `<article class="card st-${sg}${open ? ' open' : ''}${h && h === S.user ? ' mine' : ''}" data-id="${b.id}">
+    <div class="card-h">
+      <button type="button" class="tg" aria-label="Rozbalit">▶</button>
+      <div><div class="name"><span class="bid">${b.id}</span>${esc(b.t)}</div><div class="sub">${esc(sub)}</div></div>
+      <div class="prog" aria-label="Kroky">${dots}</div>
+      <div class="right"><span class="pill st-${sg}">${esc(pillText(b))}</span>${act}</div>
+    </div>
+    ${vr}
+    ${open ? renderBody(b) : ''}
+  </article>`;
+}
+
+function renderBody(b) {
+  const s = st(b.id), k = nextStep(b), h = holder(b), me = S.user, last = lastDone(b), busy = S.busy.has(b.id) ? 'disabled' : '';
+  const rows = b.d.map(c => {
+    const d = DOCS[c] || { n: c }, pz = s.pozn?.[c];
+    const size = d.x ? 'tabulka' : d.s ? plural(d.s, 'str.', 'str.', 'str.') : '';
+    return `<tr><td class="code">${c}</td>
+      <td><div class="dn">${esc(d.n)}</div>${d.p ? `<div class="dp">vč. ${esc(d.p)}</div>` : ''}</td>
+      <td class="r v">${d.v ? 'v' + esc(d.v) : ''}</td><td class="r">${size}</td>
+      <td class="note"><input type="text" data-note="${c}" value="${esc(pz?.x || '')}" placeholder="Poznámka" aria-label="Poznámka ${c}">
+        ${pz?.x ? `<div class="by">${esc(P[pz.u]?.n || '')} ${dm(pz.t)}</div>` : ''}</td></tr>`;
+  }).join('');
+  const hist = (s.hist || []).map(e => {
+    let t;
+    if (e.k === 'vraceno') t = `${P[e.u]?.n || ''} ${vb(e.u, 'vrátil')} s připomínkami: <span class="x">${esc(e.x)}</span>`;
+    else if (e.k === 'zpet') t = `<span class="z">${P[e.u]?.n || ''} ${vb(e.u, 'vzal')} zpět: ${esc(stepName(b, e.x) || e.x)}</span>`;
+    else { t = esc(stepName(b, e.k)); if (e.u !== actor(b, e.k)) t += ` <span class="muted">(zapsal${P[e.u]?.m ? '' : 'a'} ${esc(P[e.u]?.n || '')})</span>`; }
+    return `<li><span class="d" title="${esc(full(e.t))}">${dm(e.t)}</span><span>${t}</span></li>`;
+  }).join('');
+  const btns = [];
+  if (k && h !== me && me === 'jarda') btns.push(`<button type="button" data-act="${k}" ${busy}>Zapsat: ${esc(stepName(b, k))}</button>`);
+  if (k && h === me && me !== 'jarda') btns.push(`<button type="button" class="warn" data-ret ${busy}>Vrátit s připomínkami</button>`);
+  if (last && (me === 'jarda' || st(b.id).kroky[last]?.u === me)) btns.push(`<button type="button" class="ghost" data-undo ${busy}>Vzít zpět: ${esc(stepName(b, last))}</button>`);
+  return `<div class="card-b">
+    <table class="docs"><thead><tr><th>Kód</th><th>Dokument</th><th class="r v">Verze</th><th class="r">Rozsah</th><th>Poznámka</th></tr></thead><tbody>${rows}</tbody></table>
+    ${hist ? `<div><div class="h3">Historie</div><ul class="tl">${hist}</ul></div>` : ''}
+    ${btns.length ? `<div class="row">${btns.join('')}</div>` : ''}
+  </div>`;
+}
+
+function render() {
+  if (!S.ready.b || !S.ready.v || !S.user) return;
+  const ae = document.activeElement;
+  if (ae && $('#waves').contains(ae) && ae.matches('input[type=text], input[type=date], textarea')) { S.pending = true; return; }
+  S.pending = false;
+  if (!S.filter) S.filter = BAL.some(b => holder(b) === S.user) ? 'mine' : 'all';
+  renderSum(); renderFilter();
+  const html = WAVES.map(w => { const list = BAL.filter(b => b.w === w.id && visible(b)); return list.length ? renderWave(w, list) : ''; }).join('');
+  $('#waves').innerHTML = html || `<div class="empty">${S.filter === 'mine' ? 'Teď na vás nic nečeká.' : 'Nic tu není.'}</div>`;
+  $('#b-who').innerHTML = `Jste: <b>${esc(P[S.user].n)}</b>`;
+  $('#b-who').hidden = false;
+  $('#b-links').hidden = !(S.user === 'jarda' && api && !api.local);
+}
+
+// ---------- stav připojení ----------
+function setStatus(t, err) { const s = $('#status'); s.textContent = t || ''; s.className = 'status' + (err ? ' err' : ''); }
+let toastT;
+function toast(t) { const el = $('#toast'); el.textContent = t; el.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('on'), 2200); }
+
+async function run(id, label, fn) {
+  if (!api) return;
+  S.busy.add(id); render(); setStatus('Ukládám…');
+  try { await fn(); setStatus('Uloženo'); if (label) toast(label); }
+  catch (e) { console.error(e); setStatus(/^Krok/.test(e?.message || '') ? e.message : 'Nepodařilo se uložit, zkuste to znovu.', true); }
+  finally { S.busy.delete(id); render(); }
+}
+
+// ---------- akce ----------
+function doStep(b, k) {
+  const h = actor(b, k), me = S.user;
+  if (me !== h && me !== 'jarda') return;
+  if (me !== h && !confirm(`Zapsat za ${P[h].a}: ${stepName(b, k)}?`)) return;
+  return run(b.id, stepName(b, k), () => api.bal(b.id, cur => {
+    const nk = steps(b).find(x => !cur.kroky[x]);
+    if (nk !== k) throw new Error('Krok už mezitím někdo potvrdil.');
+    const t = nowIso();
+    cur.kroky[k] = { u: me, t };
+    if (k === 'precteno') cur.vraceno = null;
+    cur.hist.push({ k, u: me, t });
+  }));
+}
+function doUndo(b) {
+  const k = lastDone(b); if (!k) return;
+  if (!confirm(`Vzít zpět krok „${stepName(b, k)}“?`)) return;
+  const me = S.user;
+  return run(b.id, 'Vzato zpět', () => api.bal(b.id, cur => {
+    if (!cur.kroky[k]) return;
+    delete cur.kroky[k];
+    cur.hist.push({ k: 'zpet', u: me, t: nowIso(), x: k });
+  }));
+}
+function doReturn(b, text) {
+  const me = S.user;
+  return run(b.id, 'Vráceno Jardovi', () => api.bal(b.id, cur => {
+    const t = nowIso();
+    cur.kroky = {}; cur.vraceno = { u: me, t, x: text };
+    cur.hist.push({ k: 'vraceno', u: me, t, x: text });
+  }));
+}
+function doNote(b, code, text) {
+  const me = S.user, x = text.trim();
+  if ((st(b.id).pozn?.[code]?.x || '') === x) return;
+  return run(b.id, '', () => api.bal(b.id, cur => {
+    if (x) cur.pozn[code] = { x, u: me, t: nowIso() }; else delete cur.pozn[code];
+  }));
+}
+function doWave(wid, fn) { return run('w-' + wid, '', () => api.vlna(wid, fn)); }
+
+// ---------- události ----------
+$('#waves').addEventListener('click', e => {
+  const card = e.target.closest('.card'); if (!card) return;
+  const b = BY_ID[card.dataset.id];
+  const btn = e.target.closest('button');
+  if (btn?.dataset.act) { e.stopPropagation(); doStep(b, btn.dataset.act); return; }
+  if (btn?.hasAttribute('data-undo')) { doUndo(b); return; }
+  if (btn?.hasAttribute('data-ret')) { openReturn(b); return; }
+  if (e.target.closest('.card-h') && !e.target.closest('input, a')) {
+    S.open.has(b.id) ? S.open.delete(b.id) : S.open.add(b.id); render();
+  }
+});
+$('#waves').addEventListener('change', e => {
+  const t = e.target;
+  if (t.dataset.note !== undefined && t.dataset.note) { const b = BY_ID[t.closest('.card').dataset.id]; doNote(b, t.dataset.note, t.value); return; }
+  const wm = t.closest('.wave-meta'); if (!wm || !canWave()) return;
+  const wid = wm.dataset.w, me = S.user;
+  if (t.dataset.wf) { const val = t.value.trim(); doWave(wid, cur => { cur[t.dataset.wf] = val; }); }
+  if (t.dataset.wc) { const on = t.checked; doWave(wid, cur => { cur[t.dataset.wc] = on ? { u: me, t: nowIso() } : null; }); }
+});
+$('#waves').addEventListener('focusout', () => setTimeout(() => { if (S.pending) render(); }, 0));
+$('#waves').addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.matches('input[type=text]')) e.target.blur(); });
+$('#filter').addEventListener('click', e => {
+  const btn = e.target.closest('button[data-f]'); if (!btn) return;
+  S.filter = btn.dataset.f; try { localStorage.setItem(LS_FILTER, S.filter); } catch (_) {} render();
+});
+
+let retB = null;
+function openReturn(b) {
+  retB = b; $('#ret-text').value = '';
+  $('#ret-title').textContent = `Vrátit: ${b.t}`;
+  $('#ret-hint').textContent = 'Balíček se vrátí Jardovi na začátek postupu. Připomínky k jednotlivým dokumentům můžete napsat i do poznámek u dokumentů.';
+  $('#dlg-ret').showModal(); setTimeout(() => $('#ret-text').focus(), 30);
+}
+$('#ret-form').addEventListener('submit', e => { const x = $('#ret-text').value.trim(); if (!x) { e.preventDefault(); return; } if (retB) doReturn(retB, x); retB = null; });
+document.querySelectorAll('dialog').forEach(d => d.addEventListener('click', e => { if (e.target.closest('[data-close]') || e.target === d) d.close(); }));
+
+// ---------- kdo jsem ----------
+function showWho() {
+  $('#main').hidden = true; $('#who').hidden = false; $('#b-who').hidden = true;
+  $('#pick').innerHTML = PEOPLE.map(p => `<button type="button" data-u="${p}">${esc(P[p].n)}<small>${esc(P[p].role)}</small></button>`).join('');
+}
+$('#pick').addEventListener('click', e => { const b = e.target.closest('button[data-u]'); if (!b) return; setUser(b.dataset.u); });
+function setUser(u) {
+  if (!P[u]) return;
+  S.user = u; try { localStorage.setItem(LS_USER, u); } catch (_) {}
+  const f = (() => { try { return localStorage.getItem(LS_FILTER); } catch (_) { return null; } })();
+  S.filter = f || null;
+  $('#who').hidden = true; $('#main').hidden = false; render();
+}
+$('#b-who').addEventListener('click', showWho);
+
+$('#b-links').addEventListener('click', () => {
+  const key = localStorage.getItem(LS_KEY) || '';
+  const base = location.origin + location.pathname + '#k=' + encodeURIComponent(key);
+  $('#links').innerHTML = PEOPLE.map(p => `<div class="link-row"><span>${esc(P[p].n)}</span><input readonly value="${esc(base + '&u=' + p)}"><button type="button" data-copy>Kopírovat</button></div>`).join('')
+    + '<p class="hint">Každý dostane svůj odkaz. Appka si podle něj pamatuje, kdo kliká. Kdo má odkaz, vidí celé schvalování.</p>';
+  $('#dlg-links').showModal();
+});
+$('#links').addEventListener('click', async e => {
+  const b = e.target.closest('[data-copy]'); if (!b) return;
+  const inp = b.parentElement.querySelector('input');
+  try { await navigator.clipboard.writeText(inp.value); toast('Odkaz zkopírován'); } catch (_) { inp.select(); }
+});
+
+// ---------- data ----------
+function onBal(entries) { S.bal = Object.fromEntries(entries); S.ready.b = true; render(); }
+function onVlny(entries) { S.vlny = Object.fromEntries(entries); S.ready.v = true; render(); }
+const norm = d => ({ ...emptyBal(), ...d, kroky: { ...(d?.kroky || {}) }, pozn: { ...(d?.pozn || {}) }, hist: [...(d?.hist || [])] });
+
+async function connectFirebase(key) {
+  const [{ initializeApp }, F] = await Promise.all([
+    import('https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js'),
+    import('https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js')]);
+  const app = initializeApp(FIREBASE, 'rd');
+  let db; try { db = F.initializeFirestore(app, { localCache: F.persistentLocalCache({ tabManager: F.persistentMultipleTabManager() }) }); } catch (e) { db = F.getFirestore(app); }
+  const balCol = F.collection(db, ROOT, key, 'balicky'), vlnyCol = F.collection(db, ROOT, key, 'vlny');
+  const denied = e => {
+    console.error(e);
+    if (e && e.code === 'permission-denied') { localStorage.removeItem(LS_KEY); showGate('Klíč neplatí. Zkontrolujte odkaz, nebo klíč vložte znovu.'); }
+    else setStatus('Spojení se ztratilo, obnovte stránku.', true);
+  };
+  F.onSnapshot(balCol, s => onBal(s.docs.map(d => [d.id, d.data()])), denied);
+  F.onSnapshot(vlnyCol, s => onVlny(s.docs.map(d => [d.id, d.data()])), denied);
+  const tx = (col, id, empty, fn) => F.runTransaction(db, async t => {
+    const ref = F.doc(col, id), snap = await t.get(ref);
+    const cur = snap.exists() ? (col === balCol ? norm(snap.data()) : { ...empty(), ...snap.data() }) : empty();
+    fn(cur); cur.upr = nowIso(); t.set(ref, cur);
+  });
+  api = { bal: (id, fn) => tx(balCol, id, emptyBal, fn), vlna: (id, fn) => tx(vlnyCol, id, emptyVlna, fn) };
+}
+function connectLocal() {
+  const load = () => { try { return JSON.parse(localStorage.getItem(LS_DEMO)) || {}; } catch (e) { return {}; } };
+  const db = load(); db.balicky = db.balicky || {}; db.vlny = db.vlny || {};
+  const persist = () => { try { localStorage.setItem(LS_DEMO, JSON.stringify(db)); } catch (e) {} };
+  const upd = async (coll, id, empty, fn, cb) => {
+    await new Promise(r => setTimeout(r, 60));
+    const cur = db[coll][id] ? (coll === 'balicky' ? norm(db[coll][id]) : { ...empty(), ...db[coll][id] }) : empty();
+    fn(cur); cur.upr = nowIso(); db[coll][id] = JSON.parse(JSON.stringify(cur)); persist(); cb(Object.entries(db[coll]));
+  };
+  api = { local: true, bal: (id, fn) => upd('balicky', id, emptyBal, fn, onBal), vlna: (id, fn) => upd('vlny', id, emptyVlna, fn, onVlny) };
+  onBal(Object.entries(db.balicky)); onVlny(Object.entries(db.vlny));
+  setStatus('Zkušební režim, data jen v tomto prohlížeči');
+}
+
+// ---------- přístup ----------
+function showGate(msg) {
+  $('#main').hidden = true; $('#who').hidden = true; $('#b-who').hidden = true; $('#b-links').hidden = true;
+  $('#gate').hidden = false; if (msg) $('#gate-msg').textContent = msg;
+}
+$('#gate-form').addEventListener('submit', e => { e.preventDefault(); const k = $('#gate-key').value.trim(); if (k) { localStorage.setItem(LS_KEY, k); location.hash = ''; location.reload(); } });
+function start() {
+  const params = new URLSearchParams(location.search);
+  const hk = /[#&]k=([^&]+)/.exec(location.hash), hu = /[#&]u=([a-z]+)/.exec(location.hash);
+  if (hu && P[hu[1]]) { try { localStorage.setItem(LS_USER, hu[1]); localStorage.removeItem(LS_FILTER); } catch (_) {} }
+  if (hk) localStorage.setItem(LS_KEY, decodeURIComponent(hk[1]));
+  if (hk || hu) history.replaceState(null, '', location.pathname + location.search);
+  if (params.has('demo')) connectLocal();
+  else {
+    const key = localStorage.getItem(LS_KEY);
+    if (!key) return showGate();
+    setStatus('Načítám…');
+    connectFirebase(key).then(() => setStatus('')).catch(e => { console.error(e); setStatus('Nepodařilo se připojit k databázi', true); });
+  }
+  const u = (() => { try { return localStorage.getItem(LS_USER); } catch (_) { return null; } })();
+  if (u && P[u]) {
+    S.user = u;
+    const f = (() => { try { return localStorage.getItem(LS_FILTER); } catch (_) { return null; } })();
+    S.filter = f || null;
+    $('#main').hidden = false; render();
+  } else showWho();
+}
+window.addEventListener('hashchange', () => { if (/[#&](k|u)=/.test(location.hash)) location.reload(); });
+start();
+</script>
+</body>
+</html>
