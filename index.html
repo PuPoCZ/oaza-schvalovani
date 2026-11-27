@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Schvalování ŘD – Oáza klidu</title>
+<title>Schvalování dokumentů – Oáza klidu</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -92,6 +92,23 @@ main { max-width: 1000px; margin: 0 auto; padding: 18px 20px 60px; }
 .done-scr h2 { margin-bottom: 30px; }
 .done-scr .undo { margin-top: 10px; font-size: 16px; }
 .nothing { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 30px 22px; font-size: 20px; text-align: center; }
+a.bigbtn { text-align: center; text-decoration: none; }
+.bigbtn.plain { background: var(--surface); border: 2px solid var(--line); color: var(--ink); font-weight: 600; font-size: 18px; }
+.item.small { padding: 14px 18px; font-size: 18px; }
+.item.warn { border-color: var(--bad); }
+.item .cnt { margin-left: auto; font-size: 18px; font-weight: 700; color: #fff; background: var(--accent); border-radius: 999px; min-width: 34px; padding: 2px 10px; text-align: center; }
+.item .cnt + .arr { margin-left: 10px; }
+.item small .sw { vertical-align: 0; margin-right: 2px; }
+.sw.c-back { background: var(--bad); }
+.scr .sub { font-size: 16px; margin: -8px 0 16px; }
+.scr .vr { margin-bottom: 16px; font-size: 17px; }
+.sumline { font-size: 19px; margin: 0 0 8px; }
+.simple .bar { margin: 0 0 8px; height: 12px; }
+.simple .legend { margin-bottom: 18px; font-size: 14px; }
+.undo-line { text-align: center; font-size: 16px; }
+.simple .tl { margin-top: 22px; font-size: 14px; color: var(--muted); }
+.simple .link-row { margin-bottom: 10px; font-size: 16px; }
+.simple .wave-meta { margin-bottom: 16px; font-size: 15px; }
 
 /* ---------- přehled (Jarda) ---------- */
 .sum { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; margin-bottom: 14px; }
@@ -196,10 +213,9 @@ dialog::backdrop { background: rgba(0, 0, 0, .4); }
 </head>
 <body>
 <header class="top">
-  <h1>Schvalování ŘD<small>Oáza klidu</small></h1>
+  <h1>Schvalování dokumentů</h1>
   <span class="spacer"></span>
   <span class="status" id="status"></span>
-  <button type="button" class="ghost" id="b-links" hidden>Odkazy</button>
   <span class="me-name" id="me" hidden></span>
 </header>
 
@@ -219,20 +235,6 @@ dialog::backdrop { background: rgba(0, 0, 0, .4); }
 </div>
 
 <main id="main" hidden></main>
-
-<dialog id="dlg-ret">
-  <div class="dlg-h"><h2 id="ret-title">Mám připomínky</h2><span class="spacer"></span><button type="button" class="ghost" data-close>Zavřít</button></div>
-  <form class="dlg-b" id="ret-form" method="dialog">
-    <label>Napište, co je potřeba opravit:<textarea id="ret-text" required></textarea></label>
-    <p class="hint">Dokumenty se vrátí Jardovi k opravě.</p>
-    <div class="big-btns"><button class="primary" id="ret-ok">Odeslat Jardovi</button><button type="button" data-close>Zrušit</button></div>
-  </form>
-</dialog>
-
-<dialog id="dlg-links">
-  <div class="dlg-h"><h2>Odkazy</h2><span class="spacer"></span><button type="button" class="ghost" data-close>Zavřít</button></div>
-  <div class="dlg-b" id="links"></div>
-</dialog>
 
 <div id="toast" role="status"><span id="toast-t"></span><button type="button" id="toast-undo" hidden>Vzít zpět</button></div>
 
@@ -317,7 +319,7 @@ async function doStep(b, k) {
     if (k === 'precteno') cur.vraceno = null;
     cur.hist.push({ k, u: me, t });
   }));
-  if (ok) { if (S.user === 'jarda') toast(`${b.t}: ${stepName(b, k)}`, () => undo(b, k, true)); else goHash(`ok-${b.id}-${k}`); }
+  if (ok) goHash(`ok-${b.id}-${k}`);
 }
 function undo(b, k, quiet) {
   const me = S.user;
@@ -334,19 +336,44 @@ function doReturn(b, text) {
     const t = nowIso();
     cur.kroky = {}; cur.vraceno = { u: me, t, x: text };
     cur.hist.push({ k: 'vraceno', u: me, t, x: text });
-  })).then(ok => { if (ok) { if (S.user === 'jarda') toast('Vráceno'); else goHash(`ok-${b.id}-vraceno`); } });
+  })).then(ok => { if (ok) goHash(`ok-${b.id}-vraceno`); });
 }
 function doWave(wid, fn) { return run('w-' + wid, () => api.vlna(wid, fn)); }
 
-// ---------- jednoduchý pohled: jedna věc na obrazovku ----------
-function route() { const m = /^#(b|r|ok)-([A-Z]\d+)(?:-(\w+))?$/.exec(location.hash); return m ? { s: m[1], id: m[2], x: m[3] } : { s: 'home' }; }
+// ---------- obrazovky: jedna věc na obrazovku ----------
+function route() {
+  const h = location.hash;
+  let m = /^#(b|r|ok)-([A-Z]\d+)(?:-(\w+))?$/.exec(h); if (m) return { s: m[1], id: m[2], x: m[3] };
+  m = /^#v-([A-Z])$/.exec(h); if (m) return { s: 'v', id: m[1] };
+  m = /^#(ukoly|prehled|odkazy)$/.exec(h); if (m) return { s: m[1] };
+  return { s: 'home' };
+}
 const goHash = h => { location.hash = h; };
-function renderSimple() {
-  const r = route(), me = S.user, b = r.id ? BY_ID[r.id] : null;
-  if (b && (r.s === 'b' || r.s === 'r') && holder(b) === me) return r.s === 'b' ? screenBal(b) : screenRet(b);
-  if (b && r.s === 'ok') return screenDone(b, r.x);
+const backLink = (href, label = 'Zpět') => `<a class="back" href="${href}">‹ ${label}</a>`;
+function jardaAct(b, k) { return k === 'precteno' ? 'Pročetl jsem' : k === 'odeslano' ? `Poslal jsem ${P[b.g].d}` : 'Předal jsem ředitelce'; }
+function todo(b) {
+  const k = nextStep(b), s = st(b.id);
+  if (k === 'precteno') return s.vraceno ? 'vráceno s připomínkami' : 'pročíst';
+  if (k === 'odeslano') return 'poslat ' + P[b.g].d;
+  if (k === 'predano') return 'předat ředitelce';
+  return '';
+}
+function screen() {
+  const r = route(), me = S.user, admin = me === 'jarda', b = r.id && BY_ID[r.id];
+  if (r.s === 'ok' && b) return screenDone(b, r.x);
+  if (r.s === 'r' && b && holder(b) === me && !admin) return screenRet(b);
+  if (r.s === 'b' && b && (admin || holder(b) === me)) return admin ? screenBalAdmin(b) : screenBal(b);
+  if (admin) {
+    if (r.s === 'ukoly') return screenTasks();
+    if (r.s === 'prehled') return screenOverview();
+    if (r.s === 'v' && WAVES.some(w => w.id === r.id)) return screenWave(WAVES.find(w => w.id === r.id));
+    if (r.s === 'odkazy') return screenLinks();
+    return screenHomeAdmin();
+  }
   return screenHome();
 }
+
+// --- gestorky a ředitelka ---
 function screenHome() {
   const me = S.user, list = myWaiting();
   const head = `<p class="hello">Dobrý den, ${esc(P[me].v)}.</p>`;
@@ -356,109 +383,109 @@ function screenHome() {
 }
 function screenBal(b) {
   const k = nextStep(b), me = S.user, busy = S.busy.has(b.id) ? 'disabled' : '';
-  const back = `<a class="back" href="#seznam">‹ Zpět</a>`;
   if (k === 'predano') {
-    return `<div class="simple scr">${back}<h2>${esc(b.t)}</h2><p>Dokumenty jste ${vb(me, 'schválil')}. Teď je předejte ředitelce.</p>
+    return `<div class="simple scr">${backLink('#seznam')}<h2>${esc(b.t)}</h2><p>Dokumenty jste ${vb(me, 'schválil')}. Teď je předejte ředitelce.</p>
       <button type="button" class="bigbtn yes" data-act="predano" data-id="${b.id}" ${busy}>${vb(me, 'Předal')} jsem ředitelce</button></div>`;
   }
-  const docs = b.d.map(c => `<li>${esc(DOCS[c]?.n || c)}<small>${c}</small></li>`).join('');
-  return `<div class="simple scr">${back}<h2>${esc(b.t)}</h2><ul class="doclist">${docs}</ul>
+  return `<div class="simple scr">${backLink('#seznam')}<h2>${esc(b.t)}</h2><ul class="doclist">${docItems(b)}</ul>
     <button type="button" class="bigbtn yes" data-act="${k}" data-id="${b.id}" ${busy}>Schvaluji</button>
-    <a class="bigbtn no" href="#r-${b.id}" style="text-align:center;text-decoration:none">Mám připomínky</a></div>`;
+    <a class="bigbtn no" href="#r-${b.id}">Mám připomínky</a></div>`;
 }
 function screenRet(b) {
   const busy = S.busy.has(b.id) ? 'disabled' : '';
-  return `<div class="simple scr"><a class="back" href="#b-${b.id}">‹ Zpět</a><h2>${esc(b.t)}</h2><p>Napište, co je potřeba opravit:</p>
+  return `<div class="simple scr">${backLink('#b-' + b.id)}<h2>${esc(b.t)}</h2><p>Napište, co je potřeba opravit:</p>
     <textarea id="ret-inline"></textarea>
     <button type="button" class="bigbtn go" data-send="${b.id}" ${busy}>Odeslat Jardovi</button></div>`;
 }
+const docItems = (b, more) => b.d.map(c => { const d = DOCS[c] || { n: c };
+  return `<li>${esc(d.n)}<small>${c}${more && d.v ? ' · v' + esc(d.v) : ''}${more ? (d.x ? ' · tabulka' : d.s ? ` · ${d.s} str.` : '') : ''}</small></li>`; }).join('');
+
 function screenDone(b, x) {
-  const s = st(b.id), me = S.user;
-  const title = x === 'vraceno' ? 'Odesláno Jardovi' : x === 'predano' ? 'Předáno ředitelce' : 'Schváleno';
+  const s = st(b.id), me = S.user, admin = me === 'jarda';
+  const title = x === 'vraceno' ? 'Odesláno Jardovi' : x === 'predano' ? 'Předáno ředitelce' : x === 'odeslano' ? `Posláno ${P[b.g].d}` : x === 'precteno' ? 'Přečteno' : 'Schváleno';
   const canUndo = x !== 'vraceno' && s.kroky?.[x]?.u === me && lastDone(b) === x;
-  return `<div class="simple scr done-scr"><div class="tick">✓</div><h2>${title}</h2>
-    <a class="bigbtn go" href="#seznam" style="text-decoration:none">Zpět na seznam</a>
+  const next = admin ? (holder(b) === 'jarda' ? '#b-' + b.id : S.backTo || '#ukoly') : '#seznam';
+  return `<div class="simple scr done-scr"><div class="tick">✓</div><h2>${esc(title)}</h2>
+    <a class="bigbtn go" href="${next}">${admin ? 'Pokračovat' : 'Zpět na seznam'}</a>
     ${canUndo ? `<p class="undo"><button type="button" class="link" data-undo-simple="${b.id}" data-k="${x}">Omyl, vzít zpět</button></p>` : ''}</div>`;
 }
 
-// ---------- přehled ----------
-function renderOverview() {
-  const admin = S.user === 'jarda';
-  const cnt = { jarda: 0, gestor: 0, red: 0, done: 0 };
-  for (const b of BAL) cnt[stage(b)]++;
-  const n = BAL.length, pct = v => (v / n * 100).toFixed(2) + '%';
-  if (!S.filter) S.filter = admin && myWaiting().length ? 'mine' : 'all';
-  const f = admin ? S.filter : 'all';
-  const vis = b => f === 'mine' ? holder(b) === S.user : f === 'done' ? stage(b) === 'done' : true;
-  const tabs = admin ? `<div class="tabs">${[['mine', `Čeká na mě (${myWaiting().length})`], ['all', 'Vše'], ['done', `Schválené (${cnt.done})`]]
-    .map(([v, l]) => `<button type="button" data-f="${v}" class="${f === v ? 'on' : ''}">${esc(l)}</button>`).join('')}</div>` : '';
-  const back = admin ? '' : `<p class="back"><button type="button" class="link" data-overview>← Zpět na moje úkoly</button></p>`;
-  const waves = WAVES.map(w => { const list = BAL.filter(b => b.w === w.id && vis(b)); return list.length ? renderWave(w, list, admin) : ''; }).join('');
-  return `${back}
-    <div class="sum"><span class="big">${cnt.done} z ${n} schváleno</span>
-      <div class="bar"><span class="c-done" style="width:${pct(cnt.done)}"></span><span class="c-red" style="width:${pct(cnt.red)}"></span><span class="c-gestor" style="width:${pct(cnt.gestor)}"></span><span class="c-jarda" style="width:${pct(cnt.jarda)}"></span></div>
-      <div class="legend"><span><i class="sw c-jarda"></i>u Jardy <b>${cnt.jarda}</b></span><span><i class="sw c-gestor"></i>u gestorů <b>${cnt.gestor}</b></span><span><i class="sw c-red"></i>u ředitelky <b>${cnt.red}</b></span><span><i class="sw c-done"></i>schváleno <b>${cnt.done}</b></span></div>
-    </div>
-    ${tabs}
-    ${waves || `<div class="empty">${f === 'mine' ? 'Teď na tebe nic nečeká.' : 'Nic tu není.'}</div>`}`;
+// --- Jarda ---
+function counts() { const c = { jarda: 0, gestor: 0, red: 0, done: 0 }; for (const b of BAL) c[stage(b)]++; return c; }
+function screenHomeAdmin() {
+  const c = counts(), mine = myWaiting().length;
+  return `<div class="simple"><p class="hello">Dobrý den, Jardo.</p><div class="items">
+    <a class="item" href="#ukoly"><span>Moje úkoly</span><span class="cnt">${mine}</span><span class="arr">›</span></a>
+    <a class="item" href="#prehled"><span>Přehled schvalování<small>${c.done} z ${BAL.length} schváleno</small></span><span class="arr">›</span></a>
+    ${api && !api.local ? '<a class="item" href="#odkazy"><span>Odkazy pro gestory</span><span class="arr">›</span></a>' : ''}
+  </div></div>`;
 }
-
-function renderWave(w, list, admin) {
+function screenTasks() {
+  const list = myWaiting();
+  const body = list.length ? `<div class="items">${list.map(b =>
+    `<a class="item small${st(b.id).vraceno && nextStep(b) === 'precteno' ? ' warn' : ''}" href="#b-${b.id}"><span>${esc(b.t)}<small>${b.w === 'X' ? '' : b.w + ' · '}${esc(todo(b))}</small></span><span class="arr">›</span></a>`).join('')}</div>`
+    : '<div class="nothing">Teď na tebe nic nečeká.</div>';
+  return `<div class="simple scr">${backLink('#seznam')}<h2>Moje úkoly</h2>${body}</div>`;
+}
+function screenOverview() {
+  const c = counts(), n = BAL.length, pct = v => (v / n * 100).toFixed(2) + '%';
+  const items = WAVES.map(w => {
+    const all = BAL.filter(b => b.w === w.id), done = all.filter(b => stage(b) === 'done').length;
+    return `<a class="item small" href="#v-${w.id}"><span>${w.id === 'X' ? '' : w.id + ' · '}${esc(w.t)}<small>${waveText(w, done, all.length)}</small></span><span class="arr">›</span></a>`;
+  }).join('');
+  return `<div class="simple scr">${backLink('#seznam')}<h2>Přehled schvalování</h2>
+    <p class="sumline"><b>${c.done} z ${n}</b> balíčků schváleno</p>
+    <div class="bar"><span class="c-done" style="width:${pct(c.done)}"></span><span class="c-red" style="width:${pct(c.red)}"></span><span class="c-gestor" style="width:${pct(c.gestor)}"></span><span class="c-jarda" style="width:${pct(c.jarda)}"></span></div>
+    <div class="legend"><span><i class="sw c-jarda"></i>u Jardy <b>${c.jarda}</b></span><span><i class="sw c-gestor"></i>u gestorů <b>${c.gestor}</b></span><span><i class="sw c-red"></i>u ředitelky <b>${c.red}</b></span><span><i class="sw c-done"></i>schváleno <b>${c.done}</b></span></div>
+    <div class="items">${items}</div></div>`;
+}
+function waveText(w, done, total) {
+  const v = S.vlny[w.id] || emptyVlna();
+  if (done < total || w.id === 'X') return `${done} z ${total} schváleno`;
+  return v.seznameni ? 'Hotovo' : v.podepsano ? 'Podepsáno, chybí seznámení' : 'K podpisu rozhodnutí';
+}
+function screenWave(w) {
   const all = BAL.filter(b => b.w === w.id), done = all.filter(b => stage(b) === 'done').length;
-  const v = S.vlny[w.id] || emptyVlna(), closed = S.closed.has(w.id);
-  const allDone = done === all.length;
-  let cnt = `${done} z ${all.length}`, cls = '';
-  if (allDone && w.id !== 'X') { cls = 'done'; cnt = v.seznameni ? 'Hotovo' : v.podepsano ? 'Podepsáno, chybí seznámení' : 'K podpisu rozhodnutí'; }
-  const showMeta = admin && w.id !== 'X' && (allDone || v.rozhodnuti || v.ucinnost || v.podepsano || v.seznameni);
+  const v = S.vlny[w.id] || emptyVlna();
+  const showMeta = w.id !== 'X' && (done === all.length || v.rozhodnuti || v.ucinnost || v.podepsano || v.seznameni);
   const meta = showMeta ? `<div class="wave-meta" data-w="${w.id}">
       <label>Rozhodnutí č. <input type="text" data-wf="rozhodnuti" value="${esc(v.rozhodnuti)}" placeholder="${esc(w.dec)}"></label>
       <label>Účinnost od <input type="date" data-wf="ucinnost" value="${esc(v.ucinnost)}"></label>
       <label><input type="checkbox" data-wc="podepsano" ${v.podepsano ? 'checked' : ''}> Podepsáno</label>
       <label><input type="checkbox" data-wc="seznameni" ${v.seznameni ? 'checked' : ''}> Zaměstnanci seznámeni</label>
       ${w.rusi ? `<span class="rusi"><b>Ruší:</b> ${esc(w.rusi)}</span>` : ''}</div>` : '';
-  return `<section class="wave${closed ? ' closed' : ''}" data-w="${w.id}">
-    <div class="wave-h" data-wtoggle="${w.id}"><span class="chev">▼</span><h2>${w.id === 'X' ? '' : w.id + ' · '}${esc(w.t)}</h2><span class="sq">${esc(w.sq)}</span><span class="cnt ${cls}">${esc(cnt)}</span></div>
-    <div class="wave-body">
-      ${w.note ? `<p class="wave-note">${esc(w.note)}</p>` : ''}
-      ${meta}
-      <div class="list">${list.map(b => renderRow(b, admin)).join('')}</div>
-    </div></section>`;
+  const items = all.map(b => { const sg = stage(b), back = nextStep(b) === 'precteno' && st(b.id).vraceno;
+    return `<a class="item small" href="#b-${b.id}"><span>${esc(b.t)}<small><i class="sw c-${back ? 'back' : sg}"></i> ${esc(statusText(b))}</small></span><span class="arr">›</span></a>`; }).join('');
+  return `<div class="simple scr">${backLink('#prehled')}<h2>${w.id === 'X' ? '' : w.id + ' · '}${esc(w.t)}</h2>
+    <p class="muted sub">${esc(w.sq)} · ${waveText(w, done, all.length)}${w.note ? ' · ' + esc(w.note) : ''}</p>${meta}<div class="items">${items}</div></div>`;
 }
-
-function renderRow(b, admin) {
-  const s = st(b.id), sg = stage(b), k = nextStep(b), h = holder(b), open = S.open.has(b.id), busy = S.busy.has(b.id) ? 'disabled' : '';
-  const back = k === 'precteno' && s.vraceno;
-  const pg = pages(b);
-  let act = '';
-  if (admin && k && h === 'jarda') act = `<button type="button" class="primary" data-act="${k}" ${busy}>${k === 'precteno' ? 'Pročetl jsem' : k === 'odeslano' ? `Poslal jsem ${P[b.g].d}` : 'Předal jsem ředitelce'}</button>`;
-  return `<div class="bal" data-id="${b.id}">
-    <div class="bal-h"><div><div class="n">${esc(b.t)}</div><div class="g">${esc(P[b.g].n)} · ${plural(b.d.length, 'dokument', 'dokumenty', 'dokumentů')}${pg ? ` · ${pg} str.` : ''}</div></div>
-      <span class="chip st-${back ? 'back' : sg}">${esc(statusText(b))}</span>
-      <span class="a">${act}</span></div>
-    ${open ? renderDetail(b, admin) : ''}
-  </div>`;
-}
-
-function renderDetail(b, admin) {
+function screenBalAdmin(b) {
   const s = st(b.id), k = nextStep(b), h = holder(b), last = lastDone(b), busy = S.busy.has(b.id) ? 'disabled' : '';
-  const rows = b.d.map(c => { const d = DOCS[c] || { n: c };
-    return `<tr><td class="code">${c}</td><td>${esc(d.n)}${d.p ? `<div class="dp">včetně: ${esc(d.p)}</div>` : ''}</td><td class="r">${d.v ? 'v' + esc(d.v) : ''}</td><td class="r">${d.x ? 'tabulka' : d.s ? d.s + ' str.' : ''}</td></tr>`; }).join('');
+  const back = S.backTo || '#v-' + b.w;
+  let btn = '';
+  if (k && h === 'jarda') btn = `<button type="button" class="bigbtn yes" data-act="${k}" data-id="${b.id}" ${busy}>${esc(jardaAct(b, k))}</button>`;
+  else if (k) btn = `<button type="button" class="bigbtn plain" data-act="${k}" data-id="${b.id}" ${busy}>Zapsat za ${esc(P[h].a)}: ${esc(stepName(b, k).toLowerCase().replace(/^(dáša|helča|jitka|ředitelka) /, ''))}</button>`;
   const hist = (s.hist || []).map(e => {
     let t;
-    if (e.k === 'vraceno') t = `${esc(P[e.u]?.n || '')} ${vb(e.u, 'vrátil')} s připomínkami: <span class="x">${esc(e.x)}</span>`;
-    else if (e.k === 'zpet') t = `<span class="muted">${esc(P[e.u]?.n || '')} ${vb(e.u, 'vzal')} zpět: ${esc(stepName(b, e.x) || e.x)}</span>`;
-    else { t = esc(stepName(b, e.k)); if (e.u !== actor(b, e.k)) t += ` <span class="muted">(zapsal${P[e.u]?.m ? '' : 'a'} ${esc(P[e.u]?.n || '')})</span>`; }
+    if (e.k === 'vraceno') t = `${esc(P[e.u]?.n || '')} ${vb(e.u, 'vrátil')} s připomínkami`;
+    else if (e.k === 'zpet') t = `${esc(P[e.u]?.n || '')} ${vb(e.u, 'vzal')} zpět: ${esc(stepName(b, e.x) || e.x)}`;
+    else { t = esc(stepName(b, e.k)); if (e.u !== actor(b, e.k)) t += ` (zapsal${P[e.u]?.m ? '' : 'a'} ${esc(P[e.u]?.n || '')})`; }
     return `<li><span class="d" title="${esc(full(e.t))}">${dm(e.t)}</span><span>${t}</span></li>`;
   }).join('');
-  const btns = [];
-  if (admin && k && h !== 'jarda') btns.push(`<button type="button" data-act="${k}" ${busy}>Zapsat za ${esc(P[h].a)}: ${esc(stepName(b, k))}</button>`);
-  if (admin && last) btns.push(`<button type="button" class="ghost" data-undo="${last}" ${busy}>Vzít zpět: ${esc(stepName(b, last))}</button>`);
-  return `<div class="bal-b">
-    ${s.vraceno ? `<div class="vr"><b>${esc(P[s.vraceno.u]?.n || '')} ${vb(s.vraceno.u, 'vrátil')} ${dm(s.vraceno.t)}:</b> ${esc(s.vraceno.x)}</div>` : ''}
-    <table class="docs"><tbody>${rows}</tbody></table>
-    ${hist ? `<ul class="tl">${hist}</ul>` : ''}
-    ${btns.length ? `<div class="row">${btns.join('')}</div>` : ''}
-  </div>`;
+  return `<div class="simple scr">${backLink(back)}<h2>${esc(b.t)}</h2>
+    <p class="muted sub">Gestor: ${esc(P[b.g].n)} · teď: ${esc(statusText(b))}</p>
+    ${s.vraceno ? `<div class="vr"><b>Připomínka od ${esc(P[s.vraceno.u]?.g || '')}:</b> ${esc(s.vraceno.x)}</div>` : ''}
+    <ul class="doclist">${docItems(b, true)}</ul>
+    ${btn}
+    ${last ? `<p class="undo-line"><button type="button" class="link" data-undo="${last}" data-id="${b.id}" ${busy}>Vzít zpět: ${esc(stepName(b, last))}</button></p>` : ''}
+    ${hist ? `<ul class="tl">${hist}</ul>` : ''}</div>`;
+}
+function screenLinks() {
+  const key = ls.get(LS_KEY) || '';
+  const base = location.origin + location.pathname + '#k=' + encodeURIComponent(key);
+  return `<div class="simple scr">${backLink('#seznam')}<h2>Odkazy pro gestory</h2>
+    ${PEOPLE.map(p => `<div class="link-row"><span>${esc(P[p].n)}</span><input readonly value="${esc(base + '&u=' + p)}"><button type="button" data-copy>Kopírovat</button></div>`).join('')}
+    <p class="hint" style="margin-top:12px">Kdo má odkaz, vidí celé schvalování.</p></div>`;
 }
 
 function render() {
@@ -466,12 +493,8 @@ function render() {
   const ae = document.activeElement;
   if (ae && $('#main').contains(ae) && ae.matches('input[type=text], input[type=date], textarea')) { S.pending = true; return; }
   S.pending = false;
-  const simple = S.user !== 'jarda' && !S.overview;
-  $('#main').innerHTML = simple ? renderSimple() : renderOverview();
-  document.title = simple ? 'Schvalování dokumentů' : 'Schvalování ŘD – Oáza klidu';
-  $('header.top h1').innerHTML = simple ? 'Schvalování dokumentů' : 'Schvalování ŘD<small>Oáza klidu</small>';
+  $('#main').innerHTML = screen();
   $('#me').innerHTML = `<b>${esc(P[S.user].n)}</b>`; $('#me').hidden = false;
-  $('#b-links').hidden = !(S.user === 'jarda' && api && !api.local);
 }
 
 // ---------- stav a hlášky ----------
@@ -487,18 +510,13 @@ $('#toast-undo').addEventListener('click', () => { const f = toastUndo; toastUnd
 // ---------- události ----------
 $('#main').addEventListener('click', e => {
   const btn = e.target.closest('button');
-  if (btn?.hasAttribute('data-overview')) { S.overview = !S.overview; render(); window.scrollTo(0, 0); return; }
   if (btn?.dataset.send) { const x = ($('#ret-inline')?.value || '').trim(); if (!x) { $('#ret-inline').focus(); return; } doReturn(BY_ID[btn.dataset.send], x); return; }
   if (btn?.dataset.undoSimple) { const b = BY_ID[btn.dataset.undoSimple]; undo(b, btn.dataset.k).then(ok => { if (ok) goHash('b-' + b.id); }); return; }
-  if (btn?.dataset.f) { S.filter = btn.dataset.f; ls.set(LS_FILTER, S.filter); render(); return; }
-  const wt = e.target.closest('[data-wtoggle]');
-  if (wt) { const w = wt.dataset.wtoggle; S.closed.has(w) ? S.closed.delete(w) : S.closed.add(w); ls.set(LS_CLOSED, [...S.closed].join(',')); render(); return; }
+  if (btn?.hasAttribute('data-copy')) { const inp = btn.parentElement.querySelector('input'); navigator.clipboard.writeText(inp.value).then(() => toast('Odkaz zkopírován'), () => inp.select()); return; }
   const el = e.target.closest('[data-id]'); if (!el) return;
   const b = BY_ID[el.dataset.id];
   if (btn?.dataset.act) { doStep(b, btn.dataset.act); return; }
   if (btn?.dataset.undo) { if (confirm(`Vzít zpět krok „${stepName(b, btn.dataset.undo)}“?`)) undo(b, btn.dataset.undo); return; }
-  if (btn?.hasAttribute('data-ret')) { openReturn(b); return; }
-  if (e.target.closest('.bal-h')) { S.open.has(b.id) ? S.open.delete(b.id) : S.open.add(b.id); render(); }
 });
 $('#main').addEventListener('change', e => {
   const t = e.target, wm = t.closest('.wave-meta'); if (!wm || S.user !== 'jarda') return;
@@ -509,14 +527,6 @@ $('#main').addEventListener('change', e => {
 $('#main').addEventListener('focusout', () => setTimeout(() => { if (S.pending) render(); }, 0));
 $('#main').addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.matches('input[type=text]')) e.target.blur(); });
 
-let retB = null;
-function openReturn(b) {
-  retB = b; $('#ret-text').value = '';
-  $('#ret-title').textContent = `Připomínky: ${b.t}`;
-  $('#dlg-ret').showModal(); setTimeout(() => $('#ret-text').focus(), 30);
-}
-$('#ret-form').addEventListener('submit', e => { const x = $('#ret-text').value.trim(); if (!x) { e.preventDefault(); return; } if (retB) doReturn(retB, x); retB = null; });
-document.querySelectorAll('dialog').forEach(d => d.addEventListener('click', e => { if (e.target.closest('[data-close]') || e.target === d) d.close(); }));
 
 // ---------- kdo jsem a odkazy ----------
 function showWho() {
@@ -529,18 +539,6 @@ function setUser(u) {
   S.user = u; ls.set(LS_USER, u);
   $('#who').hidden = true; $('#main').hidden = false; render();
 }
-$('#b-links').addEventListener('click', () => {
-  const key = ls.get(LS_KEY) || '';
-  const base = location.origin + location.pathname + '#k=' + encodeURIComponent(key);
-  $('#links').innerHTML = PEOPLE.map(p => `<div class="link-row"><span>${esc(P[p].n)}</span><input readonly value="${esc(base + '&u=' + p)}"><button type="button" data-copy>Kopírovat</button></div>`).join('')
-    + '<p class="hint">Každý dostane svůj odkaz. Kdo má odkaz, vidí celé schvalování.</p>';
-  $('#dlg-links').showModal();
-});
-$('#links').addEventListener('click', async e => {
-  const b = e.target.closest('[data-copy]'); if (!b) return;
-  const inp = b.parentElement.querySelector('input');
-  try { await navigator.clipboard.writeText(inp.value); toast('Odkaz zkopírován'); } catch (_) { inp.select(); }
-});
 
 // ---------- data ----------
 function onBal(entries) { S.bal = Object.fromEntries(entries); S.ready.b = true; render(); }
@@ -584,7 +582,7 @@ function connectLocal() {
 
 // ---------- přístup ----------
 function showGate(msg) {
-  $('#main').hidden = true; $('#who').hidden = true; $('#me').hidden = true; $('#b-links').hidden = true;
+  $('#main').hidden = true; $('#who').hidden = true; $('#me').hidden = true;
   $('#gate').hidden = false; if (msg) $('#gate-msg').textContent = msg;
 }
 $('#gate-form').addEventListener('submit', e => { e.preventDefault(); const k = $('#gate-key').value.trim(); if (k) { ls.set(LS_KEY, k); location.hash = ''; location.reload(); } });
@@ -607,7 +605,13 @@ function start() {
   if (u && P[u]) { S.user = u; $('#main').hidden = false; render(); }
   else showWho();
 }
-window.addEventListener('hashchange', () => { if (/[#&](k|u)=/.test(location.hash)) location.reload(); else { render(); window.scrollTo(0, 0); } });
+let prevHash = '';
+window.addEventListener('hashchange', e => {
+  if (/[#&](k|u)=/.test(location.hash)) { location.reload(); return; }
+  const from = new URL(e.oldURL).hash, r = route();
+  if (r.s === 'b' && /^#(ukoly|v-[A-Z]|seznam)?$/.test(from)) S.backTo = from || '#seznam';
+  render(); window.scrollTo(0, 0);
+});
 start();
 </script>
 </body>
