@@ -74,7 +74,13 @@ main { max-width: 1000px; margin: 0 auto; padding: 18px 20px 60px; }
 .lead { font-size: 18px; margin: 0 0 16px; color: var(--muted); }
 .kick, .scr .kick { font-size: 15px; font-weight: 500; color: var(--muted); margin: 0 0 2px; }
 .item { position: relative; }
-.gbadge { position: absolute; top: 12px; right: 14px; font-size: 13px; font-weight: 600; padding: 2px 10px; border-radius: 999px; background: var(--bg); border: 1px solid var(--line); color: var(--ink); }
+.gbadge { position: absolute; top: 12px; right: 14px; font-size: 13px; font-weight: 600; padding: 2px 10px; border-radius: 999px; }
+.g-dasa { background: #e3eef9; color: #1d5a96; } .g-helca { background: #e1f1e4; color: #2a6f3a; }
+.g-jitka { background: #fbefd9; color: #8a5a0b; } .g-jarda { background: #eee6f6; color: #6a3f8c; }
+@media (prefers-color-scheme: dark) {
+  .g-dasa { background: #1e3247; color: #8fbdf0; } .g-helca { background: #1d3324; color: #8fd39d; }
+  .g-jitka { background: #3a2d17; color: #e8b860; } .g-jarda { background: #2f2338; color: #c9a3e6; }
+}
 .items { display: flex; flex-direction: column; gap: 12px; }
 .items.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
 .item { display: flex; align-items: center; gap: 12px; padding: 16px 18px; background: var(--surface); border: 2px solid var(--line); border-radius: 14px; color: var(--ink); text-decoration: none; }
@@ -390,7 +396,7 @@ function todo(b) {
 }
 // dlaždice balíčku: číslo, název, rozsah a jedna stavová řádka
 function tile(b, line, cls = '', showG = false) {
-  return `<a class="item bal ${cls}${showG ? ' has-g' : ''}" href="#b-${b.id}">${showG ? `<span class="gbadge" title="Gestor">${esc(P[b.g].n)}</span>` : ''}<span class="txt"><span class="kick">${bn(b)}</span><b>${esc(b.t)}</b><small>${meta(b)}</small>${line ? `<span class="line">${line}</span>` : ''}</span><span class="arr">›</span></a>`;
+  return `<a class="item bal ${cls}${showG ? ' has-g' : ''}" href="#b-${b.id}">${showG ? `<span class="gbadge g-${b.g}" title="Gestor">${esc(P[b.g].n)}</span>` : ''}<span class="txt"><span class="kick">${bn(b)}</span><b>${esc(b.t)}</b><small>${meta(b)}</small>${line ? `<span class="line">${line}</span>` : ''}</span><span class="arr">›</span></a>`;
 }
 function docTable(b, admin) {
   const rows = b.d.map(c => { const d = DOCS[c] || { n: c };
