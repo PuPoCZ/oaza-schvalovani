@@ -5,7 +5,7 @@ Klíč se bere z proměnné RD_KLIC, ze souboru ~/.config/oaza-rd/klic nebo z --
 Balíčky a dokumenty se čtou z index.html (blok <script id="data">). Jen standardní knihovna.
 
   rd.py stav [--kdo dasa|helca|jitka|jarda]   přehled balíčků a u koho jsou
-  rd.py detail ID                              stav jednoho balíčku jako JSON
+  rd.py detail ID                              stav jednoho balíčku jako JSON (ID = číslo balíčku 1–42 nebo kód A2)
   rd.py krok ID [KROK] [--kdo U] [--kdy ISO]   potvrdí další krok (precteno, odeslano, gestor, predano, reditelka)
   rd.py zpet ID [--kdo U]                      vezme zpět poslední krok
   rd.py vratit ID TEXT [--kdo U]               vrátí balíček Jardovi s připomínkami
@@ -133,7 +133,10 @@ def holder_txt(b, s):
 
 
 def bal_arg(i):
-    if i not in BAL: sys.exit(f'Neznámý balíček {i}. Platné: {", ".join(BAL)}')
+    if i.isdigit():
+        m = [b for b in BAL.values() if b.get('n') == int(i)]
+        if m: return m[0]
+    if i not in BAL: sys.exit(f'Neznámý balíček {i}. Zadejte číslo 1 až {len(BAL)} nebo kód typu A2.')
     return BAL[i]
 
 
@@ -165,7 +168,7 @@ def main():
                 n = next_step(b, s)
                 if a.kdo and (not n or actor(b, n) != a.kdo): continue
                 vr = '  VRÁCENO: ' + s['vraceno']['x'] if s.get('vraceno') else ''
-                print(f"  {b['id']:3} {b['t'][:44]:44} {JMENA[b['g']]:6} {holder_txt(b, s):12} {len([x for x in steps(b) if (s.get('kroky') or {}).get(x)])}/{len(steps(b))}{vr}")
+                print(f"  {b['n']:>2} {b['id']:3} {b['t'][:44]:44} {JMENA[b['g']]:6} {holder_txt(b, s):12} {len([x for x in steps(b) if (s.get('kroky') or {}).get(x)])}/{len(steps(b))}{vr}")
     elif a.cmd == 'detail':
         b = bal_arg(a.id)
         r = req('GET', f'{ROOT}/{k}/balicky/{b["id"]}')

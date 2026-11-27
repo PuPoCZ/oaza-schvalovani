@@ -66,49 +66,74 @@ header.top h1 small { font-weight: 400; color: var(--muted); margin-left: 6px; }
 
 main { max-width: 1000px; margin: 0 auto; padding: 18px 20px 60px; }
 
-/* ---------- jednoduchý pohled (gestoři, ředitelka) ---------- */
-.simple { max-width: 560px; margin: 0 auto; font-size: 18px; }
-.simple .back { display: inline-block; font-size: 17px; color: var(--accent); text-decoration: none; padding: 6px 0; margin-bottom: 8px; }
-.hello { font-size: 26px; font-weight: 700; margin: 10px 0 6px; }
-.lead { font-size: 19px; margin: 0 0 16px; }
+/* ---------- obrazovky ---------- */
+.simple { max-width: 1080px; margin: 0 auto; font-size: 17px; }
+.simple.narrow { max-width: 600px; }
+.simple .back { display: inline-block; font-size: 16px; color: var(--accent); text-decoration: none; padding: 4px 0; margin-bottom: 6px; }
+.hello { font-size: 26px; font-weight: 700; margin: 8px 0 4px; }
+.lead { font-size: 18px; margin: 0 0 16px; color: var(--muted); }
+.kick, .scr .kick { font-size: 15px; font-weight: 600; color: var(--accent); margin: 0 0 2px; }
 .items { display: flex; flex-direction: column; gap: 12px; }
-.item { display: flex; align-items: center; gap: 12px; padding: 20px 22px; background: var(--surface); border: 2px solid var(--line); border-radius: 14px; color: var(--ink); text-decoration: none; font-size: 21px; font-weight: 600; }
+.items.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+.item { display: flex; align-items: center; gap: 12px; padding: 16px 18px; background: var(--surface); border: 2px solid var(--line); border-radius: 14px; color: var(--ink); text-decoration: none; }
 .item:hover, .item:focus-visible { border-color: var(--accent); }
-.item small { display: block; font-size: 15px; font-weight: 400; color: var(--muted); margin-top: 2px; }
+.item .txt { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.item .txt .kick { font-size: 13px; }
+.item b { font-size: 19px; font-weight: 700; line-height: 1.25; }
+.item small { font-size: 14.5px; color: var(--muted); }
+.item .line { font-size: 14.5px; color: var(--ink); margin-top: 4px; }
+.item .line .sw { vertical-align: 0; margin-right: 2px; }
+.item.warn { border-color: var(--bad); }
+.item.warn .line { color: var(--bad); font-weight: 600; }
+.item .cnt { margin-left: auto; font-size: 18px; font-weight: 700; color: #fff; background: var(--accent); border-radius: 999px; min-width: 36px; padding: 2px 10px; text-align: center; }
 .item .arr { margin-left: auto; font-size: 30px; color: var(--accent); line-height: 1; }
-.scr h2 { font-size: 26px; margin: 0 0 14px; font-weight: 700; }
+.item .cnt + .arr { margin-left: 10px; }
+.scr h2 { font-size: 26px; margin: 0 0 16px; font-weight: 700; }
 .scr p { margin: 0 0 14px; }
-.doclist { list-style: none; margin: 0 0 26px; padding: 0; }
-.doclist li { padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 18px; }
-.doclist li:first-child { border-top: 1px solid var(--line); }
-.doclist small { color: var(--muted); font-size: 14px; margin-left: 6px; }
-.bigbtn { display: block; width: 100%; font-size: 20px; font-weight: 700; padding: 18px; border-radius: 12px; margin-bottom: 14px; }
+.scr .sub { font-size: 16px; margin: -8px 0 16px; }
+.split { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 24px; align-items: start; }
+.side { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; position: sticky; top: 70px; }
+.side-q { font-size: 17px; margin: 0 0 16px !important; }
+table.dt { width: 100%; border-collapse: collapse; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; font-size: 16px; }
+table.dt th { text-align: left; font-size: 13px; font-weight: 600; color: var(--muted); padding: 10px 14px; border-bottom: 1px solid var(--line); background: var(--bg); }
+table.dt td { padding: 12px 14px; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+table.dt tr:last-child td { border-bottom: 0; }
+table.dt .code { font-family: var(--f-mono); font-size: 14px; color: var(--accent); white-space: nowrap; width: 1%; }
+table.dt .dp { font-size: 14px; color: var(--muted); }
+table.dt .r { text-align: right; white-space: nowrap; width: 1%; color: var(--muted); }
+.bigbtn { display: block; width: 100%; font-size: 19px; font-weight: 700; padding: 16px; border-radius: 12px; margin-bottom: 12px; }
+a.bigbtn { text-align: center; text-decoration: none; }
 .bigbtn.yes { background: var(--ok); border: 2px solid var(--ok); color: #fff; }
 .bigbtn.no { background: var(--surface); border: 2px solid var(--bad); color: var(--bad); }
 .bigbtn.go { background: var(--accent); border: 2px solid var(--accent); color: #fff; }
+.bigbtn.plain { background: var(--surface); border: 2px solid var(--line); color: var(--ink); font-weight: 600; font-size: 17px; }
 .scr textarea { min-height: 200px; font-size: 18px; margin-bottom: 16px; }
 .done-scr { text-align: center; padding-top: 30px; }
 .done-scr .tick { width: 96px; height: 96px; border-radius: 50%; background: var(--ok); color: #fff; font-size: 56px; line-height: 96px; margin: 0 auto 16px; }
-.done-scr h2 { margin-bottom: 30px; }
+.done-scr h2 { margin-bottom: 6px; }
+.done-scr .muted { margin-bottom: 26px; }
 .done-scr .undo { margin-top: 10px; font-size: 16px; }
-.nothing { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 30px 22px; font-size: 20px; text-align: center; }
-a.bigbtn { text-align: center; text-decoration: none; }
-.bigbtn.plain { background: var(--surface); border: 2px solid var(--line); color: var(--ink); font-weight: 600; font-size: 18px; }
-.item.small { padding: 14px 18px; font-size: 18px; }
-.item.warn { border-color: var(--bad); }
-.item .cnt { margin-left: auto; font-size: 18px; font-weight: 700; color: #fff; background: var(--accent); border-radius: 999px; min-width: 34px; padding: 2px 10px; text-align: center; }
-.item .cnt + .arr { margin-left: 10px; }
-.item small .sw { vertical-align: 0; margin-right: 2px; }
+.nothing { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 30px 22px; font-size: 20px; text-align: center; max-width: 600px; }
 .sw.c-back { background: var(--bad); }
-.scr .sub { font-size: 16px; margin: -8px 0 16px; }
-.scr .vr { margin-bottom: 16px; font-size: 17px; }
+.scr .vr { margin-bottom: 14px; font-size: 16px; }
 .sumline { font-size: 19px; margin: 0 0 8px; }
 .simple .bar { margin: 0 0 8px; height: 12px; }
 .simple .legend { margin-bottom: 18px; font-size: 14px; }
-.undo-line { text-align: center; font-size: 16px; }
-.simple .tl { margin-top: 22px; font-size: 14px; color: var(--muted); }
+.undo-line { text-align: center; font-size: 15px; margin: 4px 0 0 !important; }
+.simple .tl { margin-top: 16px; font-size: 14px; color: var(--muted); border-top: 1px solid var(--line-soft); padding-top: 10px; }
 .simple .link-row { margin-bottom: 10px; font-size: 16px; }
 .simple .wave-meta { margin-bottom: 16px; font-size: 15px; }
+@media (max-width: 860px) {
+  .split { grid-template-columns: 1fr; }
+  .side { position: static; }
+}
+@media (max-width: 600px) {
+  .simple { font-size: 17px; }
+  table.dt thead { display: none; }
+  table.dt .r.v { display: none; }
+  table.dt td { padding: 10px; }
+  table.dt .code { font-size: 12.5px; }
+}
 
 /* ---------- přehled (Jarda) ---------- */
 .sum { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; margin-bottom: 14px; }
@@ -238,7 +263,7 @@ dialog::backdrop { background: rgba(0, 0, 0, .4); }
 
 <div id="toast" role="status"><span id="toast-t"></span><button type="button" id="toast-undo" hidden>Vzít zpět</button></div>
 
-<script type="application/json" id="data">{"waves":[{"id":"A","sq":"SQ 7 a 2","t":"Stížnosti a ochrana práv","dec":"ŘD-01/2026","rusi":"Standard kvality č. 2 a č. 7 (2025), dosavadní domácí řád, pravidla k restriktivním opatřením, stížnostem a darům","note":""},{"id":"B","sq":"SQ 14","t":"Nouzové a havarijní situace","dec":"ŘD-02/2026","rusi":"Standard kvality č. 14 (2025), Pravidla pro nouzové a havarijní situace","note":""},{"id":"C","sq":"SQ 3, 11 a 12","t":"Zájemce, dostupnost a informovanost","dec":"ŘD-03/2026","rusi":"Standard kvality č. 3, č. 11 a č. 12 (2025)","note":""},{"id":"D","sq":"SQ 5, 6 a 8","t":"Plánování, dokumentace a návaznost","dec":"ŘD-04/2026","rusi":"Standard kvality č. 5, č. 6 a č. 8 (2025)","note":""},{"id":"E","sq":"SQ 4","t":"Smlouva","dec":"ŘD-05/2026","rusi":"Standard kvality č. 4 (2025), dosavadní vzor smlouvy","note":"Čeká na právní konzultaci smlouvy."},{"id":"F","sq":"SQ 9, 10 a 15","t":"Personál, rozvoj a kvalita","dec":"ŘD-06/2026","rusi":"Standard kvality č. 9, č. 10 a č. 15 (2025), Mzdový řád 2025","note":""},{"id":"G","sq":"SQ 13","t":"Prostředí a podmínky","dec":"ŘD-07/2026","rusi":"Standard kvality č. 13 (2025)","note":"Provozní řád ORG-11 se vydává až po vyjádření KHS."},{"id":"H","sq":"SQ 1","t":"Cíle a pracovní postupy","dec":"ŘD-08/2026","rusi":"Standard kvality č. 1 (2025), dosavadní ošetřovatelské a pracovní postupy přímé péče","note":""},{"id":"I","sq":"Mimo standardy","t":"Zdravotní úsek","dec":"ŘD-09/2026","rusi":"zbývající zdravotní pravidla staré dokumentace (léky, standardní operační postupy)","note":""},{"id":"J","sq":"Mimo standardy","t":"Ekonomika a závěrečné zrušení","dec":"ŘD-10/2026","rusi":"celá zbývající předreorganizační ŘD","note":""},{"id":"X","sq":"Samostatně","t":"Mimo vlny","dec":"","rusi":"","note":"Sazebník ředitelka podepisuje samostatně jako přílohu dodatku ke smlouvě."}],"balicky":[{"id":"A1","w":"A","t":"Rámec","g":"jarda","d":["ORG-02","F-20"]},{"id":"A2","w":"A","t":"Stížnosti","g":"dasa","d":["SOC-08","KLI-02","F-04","SQ-07"]},{"id":"A3","w":"A","t":"Ochrana práv","g":"dasa","d":["SOC-03","SQ-02"]},{"id":"A4","w":"A","t":"Omezení pohybu a postranice","g":"helca","d":["F-06","F-30","F-31","F-08"]},{"id":"A5","w":"A","t":"Osobní údaje a fotografie","g":"jarda","d":["ORG-05","F-21","F-22","F-23","F-29"]},{"id":"A6","w":"A","t":"Peníze a dary klientů","g":"jarda","d":["ORG-07","F-19","F-24"]},{"id":"A7","w":"A","t":"Vzdělávání a zaškolení","g":"jitka","d":["ORG-13","F-17"]},{"id":"A8","w":"A","t":"Domácí řád","g":"dasa","d":["KLI-01"]},{"id":"B1","w":"B","t":"Nouzové situace a pády","g":"helca","d":["SOC-10","ZDR-03","ZDR-04","F-26","SQ-14"]},{"id":"B2","w":"B","t":"BOZP a požární ochrana","g":"jitka","d":["ORG-09"]},{"id":"B3","w":"B","t":"Hodnocení kvality","g":"dasa","d":["SOC-11"]},{"id":"C1","w":"C","t":"Veřejný závazek a dostupnost","g":"dasa","d":["SOC-01","SQ-11"]},{"id":"C2","w":"C","t":"Informace o službě","g":"jitka","d":["KLI-04","SQ-12"]},{"id":"C3","w":"C","t":"Zájemce a jednání","g":"dasa","d":["SOC-04","F-11","F-10","F-05","F-01","SQ-03"]},{"id":"C4","w":"C","t":"Uzavření smlouvy (postup)","g":"dasa","d":["SOC-05"]},{"id":"C5","w":"C","t":"Personální zajištění a profily pozic","g":"jitka","d":["ORG-12"]},{"id":"D1","w":"D","t":"Průběh služby a návaznost","g":"dasa","d":["SOC-02","SOC-09","SQ-08"]},{"id":"D2","w":"D","t":"Individuální plánování","g":"dasa","d":["SOC-06","F-03","F-14","F-25","SQ-05"]},{"id":"D3","w":"D","t":"Dokumentace o klientech","g":"dasa","d":["SOC-07","SQ-06"]},{"id":"D4","w":"D","t":"Spisy, skartace a záznamy o zpracování","g":"jarda","d":["ORG-06","F-09"]},{"id":"D5","w":"D","t":"Zdravotnická dokumentace","g":"helca","d":["ZDR-02","F-32"]},{"id":"E1","w":"E","t":"Smlouva","g":"jarda","d":["F-02","SQ-04"]},{"id":"F1","w":"F","t":"Organizační řád","g":"jitka","d":["ORG-01","SQ-09"]},{"id":"F2","w":"F","t":"Hodnocení a rozvoj zaměstnanců","g":"jitka","d":["F-15","F-16","SQ-10"]},{"id":"F3","w":"F","t":"Mzdy a odchod zaměstnance","g":"jarda","d":["ORG-04","F-28"]},{"id":"F4","w":"F","t":"Zvyšování kvality","g":"dasa","d":["F-13","F-18","SQ-15"]},{"id":"G1","w":"G","t":"Provozně-technické směrnice","g":"jitka","d":["ORG-10","SQ-13"]},{"id":"G2","w":"G","t":"Provozní řád (KHS)","g":"jitka","d":["ORG-11"]},{"id":"G3","w":"G","t":"Hygienická péče","g":"helca","d":["ZDR-05"]},{"id":"H1","w":"H","t":"Pracovní řád a etický kodex","g":"jarda","d":["ORG-03"]},{"id":"H2","w":"H","t":"Přímá péče: rámec a sociální postupy","g":"dasa","d":["SOC-12","PP-13","PP-14","PP-15","SQ-01"]},{"id":"H3","w":"H","t":"Postupy: jídlo, hygiena, oblékání","g":"helca","d":["PP-03","PP-04","PP-05","PP-06","PP-09"]},{"id":"H4","w":"H","t":"Postupy: vyprazdňování, kůže, pohyb, sledování","g":"helca","d":["PP-07","PP-08","PP-10","PP-11","PP-12"]},{"id":"H5","w":"H","t":"Postupy: úklid a prádlo","g":"jitka","d":["PP-01","PP-02"]},{"id":"I1","w":"I","t":"Podávání léčiv","g":"helca","d":["ZDR-01","F-27"]},{"id":"I2","w":"I","t":"Dekubity, výživa, paliativní péče","g":"helca","d":["ZDR-06","ZDR-07","ZDR-08"]},{"id":"I3","w":"I","t":"OS: rámec, měření a odběry","g":"helca","d":["ZDR-09","OS-01","OS-02","OS-03"]},{"id":"I4","w":"I","t":"OS: injekce a místní aplikace léků","g":"helca","d":["OS-04","OS-05","OS-11"]},{"id":"I5","w":"I","t":"OS: rány, bandáže, stomie","g":"helca","d":["OS-06","OS-12","OS-10"]},{"id":"I6","w":"I","t":"OS: katétr, sonda, klyzma, dýchací cesty","g":"helca","d":["OS-07","OS-08","OS-09","OS-13"]},{"id":"J1","w":"J","t":"Účetnictví a hotovost klientů","g":"jarda","d":["ORG-08","F-07"]},{"id":"X1","w":"X","t":"Sazebník","g":"jarda","d":["KLI-03"]}],"docs":{"ORG-02":{"n":"Řízení dokumentace","v":"0.15","s":5,"x":false,"p":"Příloha A Slovník"},"F-20":{"n":"Listina seznámení s dokumenty","v":"0.4","s":4,"x":false,"p":""},"SOC-08":{"n":"Stížnosti","v":"0.11","s":5,"x":false,"p":""},"KLI-02":{"n":"Jak podat stížnost","v":"0.10","s":3,"x":false,"p":"Příloha 1 Plakát"},"F-04":{"n":"Záznam a evidence stížností","v":"0.5","s":4,"x":false,"p":"záznam a evidence"},"SQ-07":{"n":"Krycí list SQ 7 (Stížnosti)","v":"0.5","s":2,"x":false,"p":""},"SOC-03":{"n":"Ochrana práv a opatření omezující pohyb","v":"0.11","s":9,"x":false,"p":""},"SQ-02":{"n":"Krycí list SQ 2 (Ochrana práv)","v":"0.5","s":2,"x":false,"p":""},"F-06":{"n":"Záznam a evidence opatření omezujících pohyb","v":"0.4","s":2,"x":false,"p":"záznam a evidence"},"F-30":{"n":"Posouzení postranice","v":"0.3","s":1,"x":false,"p":""},"F-31":{"n":"Seznam klientů s postranicí","v":"0.2","s":1,"x":false,"p":""},"F-08":{"n":"Záznam o mimořádné události","v":"0.3","s":1,"x":false,"p":""},"ORG-05":{"n":"Ochrana osobních údajů","v":"0.12","s":8,"x":false,"p":"Příloha A Kamery"},"F-21":{"n":"Informace o zpracování osobních údajů (klienti)","v":"0.66","s":3,"x":false,"p":""},"F-22":{"n":"Informace o zpracování osobních údajů (zaměstnanci)","v":"0.23","s":2,"x":false,"p":""},"F-23":{"n":"Souhlas s pořizováním a zveřejňováním fotografií a videozáznamů","v":"0.4","s":2,"x":false,"p":""},"F-29":{"n":"Evidence souhlasů s fotografiemi a videozáznamy","v":"0.3","s":0,"x":true,"p":""},"ORG-07":{"n":"Depozita klientů","v":"0.5","s":3,"x":false,"p":""},"F-19":{"n":"Evidence darů","v":"0.1","s":0,"x":true,"p":""},"F-24":{"n":"Darovací smlouva","v":"0.1","s":1,"x":false,"p":""},"ORG-13":{"n":"Vzdělávání, hodnocení a supervize","v":"0.9","s":5,"x":false,"p":"Příloha A Kontrakt se supervizorem"},"F-17":{"n":"Adaptační (zaškolovací) plán nového zaměstnance","v":"0.7","s":2,"x":false,"p":""},"KLI-01":{"n":"Domácí řád","v":"0.8","s":7,"x":false,"p":"Příloha A Ve zkratce"},"SOC-10":{"n":"Nouzové a havarijní situace","v":"0.10","s":7,"x":false,"p":"Příloha P1 Záskoky"},"ZDR-03":{"n":"Hlášení mimořádných událostí","v":"0.7","s":2,"x":false,"p":""},"ZDR-04":{"n":"Prevence pádů","v":"0.8","s":3,"x":false,"p":""},"F-26":{"n":"Evidence pádů","v":"0.1","s":0,"x":true,"p":""},"SQ-14":{"n":"Krycí list SQ 14 (Nouzové a havarijní situace)","v":"0.4","s":2,"x":false,"p":""},"ORG-09":{"n":"BOZP a požární ochrana","v":"0.7","s":3,"x":false,"p":"přílohy od OZO"},"SOC-11":{"n":"Hodnocení kvality a spokojenosti","v":"0.8","s":5,"x":false,"p":""},"SOC-01":{"n":"Veřejný závazek","v":"0.9","s":4,"x":false,"p":""},"SQ-11":{"n":"Krycí list SQ 11 (Dostupnost)","v":"0.4","s":2,"x":false,"p":""},"KLI-04":{"n":"Informace o službě","v":"0.9","s":3,"x":false,"p":""},"SQ-12":{"n":"Krycí list SQ 12 (Informovanost)","v":"0.4","s":2,"x":false,"p":""},"SOC-04":{"n":"Jednání se zájemcem a odmítnutí","v":"0.7","s":4,"x":false,"p":""},"F-11":{"n":"Záznam z jednání se zájemcem o sociální službu","v":"0.3","s":1,"x":false,"p":""},"F-10":{"n":"Evidence žadatelů a odmítnutí","v":"0.1","s":0,"x":true,"p":""},"F-05":{"n":"Evidence vážně míněných nesouhlasů","v":"0.1","s":0,"x":true,"p":""},"F-01":{"n":"Žádost, vyjádření lékaře a dotazník zvyklostí","v":"0.2","s":8,"x":false,"p":"žádost, vyjádření lékaře, dotazník"},"SQ-03":{"n":"Krycí list SQ 3 (Jednání se zájemcem)","v":"0.4","s":2,"x":false,"p":""},"SOC-05":{"n":"Smlouva s klientem","v":"0.8","s":5,"x":false,"p":""},"ORG-12":{"n":"Personální zajištění a zaškolování","v":"0.7","s":20,"x":false,"p":"Příloha A Profily pozic"},"SOC-02":{"n":"Průběh poskytování služby","v":"0.9","s":7,"x":false,"p":""},"SOC-09":{"n":"Návaznost na další zdroje","v":"0.8","s":3,"x":false,"p":""},"SQ-08":{"n":"Krycí list SQ 8 (Návaznost)","v":"0.4","s":2,"x":false,"p":""},"SOC-06":{"n":"Individuální plánování","v":"0.11","s":6,"x":false,"p":""},"F-03":{"n":"Individuální plán","v":"0.6","s":3,"x":false,"p":""},"F-14":{"n":"Biografická anamnéza klienta","v":"0.1","s":1,"x":false,"p":""},"F-25":{"n":"Seznam klíčových pracovníků","v":"0.3","s":2,"x":false,"p":""},"SQ-05":{"n":"Krycí list SQ 5 (Individuální plánování)","v":"0.4","s":3,"x":false,"p":""},"SOC-07":{"n":"Dokumentace o klientech","v":"0.9","s":5,"x":false,"p":""},"SQ-06":{"n":"Krycí list SQ 6 (Dokumentace)","v":"0.5","s":2,"x":false,"p":""},"ORG-06":{"n":"Spisový a skartační řád","v":"0.9","s":5,"x":false,"p":""},"F-09":{"n":"Záznamy o činnostech zpracování","v":"0.2","s":0,"x":true,"p":""},"ZDR-02":{"n":"Zdravotnická dokumentace","v":"0.7","s":3,"x":false,"p":""},"F-32":{"n":"Určení osob pro informace o zdravotním stavu","v":"0.2","s":1,"x":false,"p":""},"F-02":{"n":"Smlouva o poskytnutí služby","v":"0.10","s":7,"x":false,"p":""},"SQ-04":{"n":"Krycí list SQ 4 (Smlouva)","v":"0.5","s":2,"x":false,"p":""},"ORG-01":{"n":"Organizační řád","v":"0.10","s":13,"x":false,"p":""},"SQ-09":{"n":"Krycí list SQ 9 (Personální zajištění)","v":"0.4","s":2,"x":false,"p":""},"F-15":{"n":"Hodnocení zaměstnance – sebehodnocení a záznam z pohovoru","v":"0.4","s":1,"x":false,"p":""},"F-16":{"n":"Individuální vzdělávací plán","v":"0.3","s":1,"x":false,"p":""},"SQ-10":{"n":"Krycí list SQ 10 (Profesní rozvoj)","v":"0.4","s":3,"x":false,"p":""},"ORG-04":{"n":"Mzdový předpis","v":"0.6","s":8,"x":false,"p":""},"F-28":{"n":"Výstupní list zaměstnance","v":"0.2","s":2,"x":false,"p":""},"F-13":{"n":"Registr rizik a pochybení","v":"0.2","s":2,"x":false,"p":""},"F-18":{"n":"Dotazník spokojenosti pro rodinu a blízké","v":"0.2","s":1,"x":false,"p":""},"SQ-15":{"n":"Krycí list SQ 15 (Zvyšování kvality)","v":"0.4","s":3,"x":false,"p":""},"ORG-10":{"n":"Provozně-technické směrnice","v":"0.4","s":3,"x":false,"p":""},"SQ-13":{"n":"Krycí list SQ 13 (Prostředí a podmínky)","v":"0.4","s":2,"x":false,"p":""},"ORG-11":{"n":"Provozní řád","v":"0.95","s":19,"x":false,"p":"Přílohy B a C"},"ZDR-05":{"n":"Hygienická péče o klienty","v":"0.6","s":2,"x":false,"p":""},"ORG-03":{"n":"Pracovní řád","v":"0.5","s":13,"x":false,"p":"Příloha A Etický kodex"},"SOC-12":{"n":"Pracovní postupy přímé péče","v":"0.2","s":5,"x":false,"p":""},"PP-13":{"n":"Kontakt s rodinou a okolím","v":"0.2","s":3,"x":false,"p":""},"PP-14":{"n":"Aktivizační a socioterapeutické činnosti","v":"0.2","s":3,"x":false,"p":""},"PP-15":{"n":"Korespondence a osobní záležitosti klienta","v":"0.2","s":2,"x":false,"p":""},"SQ-01":{"n":"Krycí list SQ 1 (Cíle a způsoby poskytování)","v":"0.6","s":2,"x":false,"p":""},"PP-03":{"n":"Podávání jídla a pití","v":"0.1","s":2,"x":false,"p":""},"PP-04":{"n":"Ranní vstávání a večerní uléhání","v":"0.1","s":3,"x":false,"p":""},"PP-05":{"n":"Koupel, sprchování a hygiena na lůžku","v":"0.1","s":3,"x":false,"p":""},"PP-06":{"n":"Péče o vlasy, nehty a holení","v":"0.1","s":2,"x":false,"p":""},"PP-09":{"n":"Oblékání a obouvání","v":"0.2","s":2,"x":false,"p":""},"PP-07":{"n":"Vyprazdňování, inkontinence a sběrný sáček","v":"0.1","s":3,"x":false,"p":""},"PP-08":{"n":"Péče o pokožku a drobná poranění","v":"0.1","s":2,"x":false,"p":""},"PP-10":{"n":"Přesuny, polohování, pohyb a kompenzační pomůcky","v":"0.2","s":3,"x":false,"p":""},"PP-11":{"n":"Sledování stavu klienta a hlášení změn","v":"0.2","s":3,"x":false,"p":""},"PP-12":{"n":"Komunikace s klientem s poruchou sluchu, zraku a řeči","v":"0.1","s":3,"x":false,"p":""},"PP-01":{"n":"Úklid pokoje a osobní věci klienta","v":"0.1","s":2,"x":false,"p":""},"PP-02":{"n":"Osobní prádlo klienta","v":"0.1","s":2,"x":false,"p":""},"ZDR-01":{"n":"Podávání léčiv","v":"0.4","s":13,"x":false,"p":""},"F-27":{"n":"Evidence návykových látek","v":"0.1","s":0,"x":true,"p":""},"ZDR-06":{"n":"Prevence dekubitů","v":"0.6","s":2,"x":false,"p":""},"ZDR-07":{"n":"Stravování a nutriční péče","v":"0.7","s":3,"x":false,"p":""},"ZDR-08":{"n":"Paliativní péče a úmrtí","v":"0.6","s":3,"x":false,"p":""},"ZDR-09":{"n":"Ošetřovatelské standardy","v":"0.3","s":5,"x":false,"p":"Příloha A Osnova"},"OS-01":{"n":"Měření fyziologických funkcí","v":"0.2","s":3,"x":false,"p":""},"OS-02":{"n":"Odběr žilní krve","v":"0.1","s":3,"x":false,"p":""},"OS-03":{"n":"Měření glykémie glukometrem","v":"0.2","s":3,"x":false,"p":""},"OS-04":{"n":"Aplikace injekce do svalu","v":"0.1","s":3,"x":false,"p":""},"OS-05":{"n":"Aplikace injekce pod kůži","v":"0.2","s":3,"x":false,"p":""},"OS-11":{"n":"Léky do oka, ucha a nosu","v":"0.2","s":3,"x":false,"p":""},"OS-06":{"n":"Převazy a péče o rány","v":"0.1","s":3,"x":false,"p":""},"OS-12":{"n":"Bandáže dolních končetin","v":"0.2","s":3,"x":false,"p":""},"OS-10":{"n":"Péče o stomie","v":"0.1","s":3,"x":false,"p":""},"OS-07":{"n":"Péče o permanentní močový katétr","v":"0.2","s":3,"x":false,"p":""},"OS-08":{"n":"Péče o PEG a výživa sondou","v":"0.1","s":3,"x":false,"p":""},"OS-09":{"n":"Aplikace klyzmatu","v":"0.1","s":3,"x":false,"p":""},"OS-13":{"n":"Odsávání a oxygenoterapie","v":"0.2","s":3,"x":false,"p":""},"ORG-08":{"n":"Účetní směrnice","v":"0.5","s":5,"x":false,"p":""},"F-07":{"n":"Hotovostní deník a soupis cenností","v":"0.1","s":0,"x":true,"p":""},"KLI-03":{"n":"Sazebník úhrad","v":"0.3","s":2,"x":false,"p":""}}}</script>
+<script type="application/json" id="data">{"waves":[{"id":"A","sq":"SQ 7 a 2","t":"Stížnosti a ochrana práv","dec":"ŘD-01/2026","rusi":"Standard kvality č. 2 a č. 7 (2025), dosavadní domácí řád, pravidla k restriktivním opatřením, stížnostem a darům","note":""},{"id":"B","sq":"SQ 14","t":"Nouzové a havarijní situace","dec":"ŘD-02/2026","rusi":"Standard kvality č. 14 (2025), Pravidla pro nouzové a havarijní situace","note":""},{"id":"C","sq":"SQ 3, 11 a 12","t":"Zájemce, dostupnost a informovanost","dec":"ŘD-03/2026","rusi":"Standard kvality č. 3, č. 11 a č. 12 (2025)","note":""},{"id":"D","sq":"SQ 5, 6 a 8","t":"Plánování, dokumentace a návaznost","dec":"ŘD-04/2026","rusi":"Standard kvality č. 5, č. 6 a č. 8 (2025)","note":""},{"id":"E","sq":"SQ 4","t":"Smlouva","dec":"ŘD-05/2026","rusi":"Standard kvality č. 4 (2025), dosavadní vzor smlouvy","note":"Čeká na právní konzultaci smlouvy."},{"id":"F","sq":"SQ 9, 10 a 15","t":"Personál, rozvoj a kvalita","dec":"ŘD-06/2026","rusi":"Standard kvality č. 9, č. 10 a č. 15 (2025), Mzdový řád 2025","note":""},{"id":"G","sq":"SQ 13","t":"Prostředí a podmínky","dec":"ŘD-07/2026","rusi":"Standard kvality č. 13 (2025)","note":"Provozní řád ORG-11 se vydává až po vyjádření KHS."},{"id":"H","sq":"SQ 1","t":"Cíle a pracovní postupy","dec":"ŘD-08/2026","rusi":"Standard kvality č. 1 (2025), dosavadní ošetřovatelské a pracovní postupy přímé péče","note":""},{"id":"I","sq":"Mimo standardy","t":"Zdravotní úsek","dec":"ŘD-09/2026","rusi":"zbývající zdravotní pravidla staré dokumentace (léky, standardní operační postupy)","note":""},{"id":"J","sq":"Mimo standardy","t":"Ekonomika a závěrečné zrušení","dec":"ŘD-10/2026","rusi":"celá zbývající předreorganizační ŘD","note":""},{"id":"X","sq":"Samostatně","t":"Mimo vlny","dec":"","rusi":"","note":"Sazebník ředitelka podepisuje samostatně jako přílohu dodatku ke smlouvě."}],"balicky":[{"id":"A1","n":1,"w":"A","t":"Rámec","g":"jarda","d":["ORG-02","F-20"]},{"id":"A2","n":2,"w":"A","t":"Stížnosti","g":"dasa","d":["SOC-08","KLI-02","F-04","SQ-07"]},{"id":"A3","n":3,"w":"A","t":"Ochrana práv","g":"dasa","d":["SOC-03","SQ-02"]},{"id":"A4","n":4,"w":"A","t":"Omezení pohybu a postranice","g":"helca","d":["F-06","F-30","F-31","F-08"]},{"id":"A5","n":5,"w":"A","t":"Osobní údaje a fotografie","g":"jarda","d":["ORG-05","F-21","F-22","F-23","F-29"]},{"id":"A6","n":6,"w":"A","t":"Peníze a dary klientů","g":"jarda","d":["ORG-07","F-19","F-24"]},{"id":"A7","n":7,"w":"A","t":"Vzdělávání a zaškolení","g":"jitka","d":["ORG-13","F-17"]},{"id":"A8","n":8,"w":"A","t":"Domácí řád","g":"dasa","d":["KLI-01"]},{"id":"B1","n":9,"w":"B","t":"Nouzové situace a pády","g":"helca","d":["SOC-10","ZDR-03","ZDR-04","F-26","SQ-14"]},{"id":"B2","n":10,"w":"B","t":"BOZP a požární ochrana","g":"jitka","d":["ORG-09"]},{"id":"B3","n":11,"w":"B","t":"Hodnocení kvality","g":"dasa","d":["SOC-11"]},{"id":"C1","n":12,"w":"C","t":"Veřejný závazek a dostupnost","g":"dasa","d":["SOC-01","SQ-11"]},{"id":"C2","n":13,"w":"C","t":"Informace o službě","g":"jitka","d":["KLI-04","SQ-12"]},{"id":"C3","n":14,"w":"C","t":"Zájemce a jednání","g":"dasa","d":["SOC-04","F-11","F-10","F-05","F-01","SQ-03"]},{"id":"C4","n":15,"w":"C","t":"Uzavření smlouvy (postup)","g":"dasa","d":["SOC-05"]},{"id":"C5","n":16,"w":"C","t":"Personální zajištění a profily pozic","g":"jitka","d":["ORG-12"]},{"id":"D1","n":17,"w":"D","t":"Průběh služby a návaznost","g":"dasa","d":["SOC-02","SOC-09","SQ-08"]},{"id":"D2","n":18,"w":"D","t":"Individuální plánování","g":"dasa","d":["SOC-06","F-03","F-14","F-25","SQ-05"]},{"id":"D3","n":19,"w":"D","t":"Dokumentace o klientech","g":"dasa","d":["SOC-07","SQ-06"]},{"id":"D4","n":20,"w":"D","t":"Spisy, skartace a záznamy o zpracování","g":"jarda","d":["ORG-06","F-09"]},{"id":"D5","n":21,"w":"D","t":"Zdravotnická dokumentace","g":"helca","d":["ZDR-02","F-32"]},{"id":"E1","n":22,"w":"E","t":"Smlouva","g":"jarda","d":["F-02","SQ-04"]},{"id":"F1","n":23,"w":"F","t":"Organizační řád","g":"jitka","d":["ORG-01","SQ-09"]},{"id":"F2","n":24,"w":"F","t":"Hodnocení a rozvoj zaměstnanců","g":"jitka","d":["F-15","F-16","SQ-10"]},{"id":"F3","n":25,"w":"F","t":"Mzdy a odchod zaměstnance","g":"jarda","d":["ORG-04","F-28"]},{"id":"F4","n":26,"w":"F","t":"Zvyšování kvality","g":"dasa","d":["F-13","F-18","SQ-15"]},{"id":"G1","n":27,"w":"G","t":"Provozně-technické směrnice","g":"jitka","d":["ORG-10","SQ-13"]},{"id":"G2","n":28,"w":"G","t":"Provozní řád (KHS)","g":"jitka","d":["ORG-11"]},{"id":"G3","n":29,"w":"G","t":"Hygienická péče","g":"helca","d":["ZDR-05"]},{"id":"H1","n":30,"w":"H","t":"Pracovní řád a etický kodex","g":"jarda","d":["ORG-03"]},{"id":"H2","n":31,"w":"H","t":"Přímá péče: rámec a sociální postupy","g":"dasa","d":["SOC-12","PP-13","PP-14","PP-15","SQ-01"]},{"id":"H3","n":32,"w":"H","t":"Postupy: jídlo, hygiena, oblékání","g":"helca","d":["PP-03","PP-04","PP-05","PP-06","PP-09"]},{"id":"H4","n":33,"w":"H","t":"Postupy: vyprazdňování, kůže, pohyb, sledování","g":"helca","d":["PP-07","PP-08","PP-10","PP-11","PP-12"]},{"id":"H5","n":34,"w":"H","t":"Postupy: úklid a prádlo","g":"jitka","d":["PP-01","PP-02"]},{"id":"I1","n":35,"w":"I","t":"Podávání léčiv","g":"helca","d":["ZDR-01","F-27"]},{"id":"I2","n":36,"w":"I","t":"Dekubity, výživa, paliativní péče","g":"helca","d":["ZDR-06","ZDR-07","ZDR-08"]},{"id":"I3","n":37,"w":"I","t":"OS: rámec, měření a odběry","g":"helca","d":["ZDR-09","OS-01","OS-02","OS-03"]},{"id":"I4","n":38,"w":"I","t":"OS: injekce a místní aplikace léků","g":"helca","d":["OS-04","OS-05","OS-11"]},{"id":"I5","n":39,"w":"I","t":"OS: rány, bandáže, stomie","g":"helca","d":["OS-06","OS-12","OS-10"]},{"id":"I6","n":40,"w":"I","t":"OS: katétr, sonda, klyzma, dýchací cesty","g":"helca","d":["OS-07","OS-08","OS-09","OS-13"]},{"id":"J1","n":41,"w":"J","t":"Účetnictví a hotovost klientů","g":"jarda","d":["ORG-08","F-07"]},{"id":"X1","n":42,"w":"X","t":"Sazebník","g":"jarda","d":["KLI-03"]}],"docs":{"ORG-02":{"n":"Řízení dokumentace","v":"0.15","s":5,"x":false,"p":"Příloha A Slovník"},"F-20":{"n":"Listina seznámení s dokumenty","v":"0.4","s":4,"x":false,"p":""},"SOC-08":{"n":"Stížnosti","v":"0.11","s":5,"x":false,"p":""},"KLI-02":{"n":"Jak podat stížnost","v":"0.10","s":3,"x":false,"p":"Příloha 1 Plakát"},"F-04":{"n":"Záznam a evidence stížností","v":"0.5","s":4,"x":false,"p":""},"SQ-07":{"n":"Krycí list SQ 7 (Stížnosti)","v":"0.5","s":2,"x":false,"p":""},"SOC-03":{"n":"Ochrana práv a opatření omezující pohyb","v":"0.11","s":9,"x":false,"p":""},"SQ-02":{"n":"Krycí list SQ 2 (Ochrana práv)","v":"0.5","s":2,"x":false,"p":""},"F-06":{"n":"Záznam a evidence opatření omezujících pohyb","v":"0.4","s":2,"x":false,"p":""},"F-30":{"n":"Posouzení postranice","v":"0.3","s":1,"x":false,"p":""},"F-31":{"n":"Seznam klientů s postranicí","v":"0.2","s":1,"x":false,"p":""},"F-08":{"n":"Záznam o mimořádné události","v":"0.3","s":1,"x":false,"p":""},"ORG-05":{"n":"Ochrana osobních údajů","v":"0.12","s":8,"x":false,"p":"Příloha A Kamery"},"F-21":{"n":"Informace o zpracování osobních údajů (klienti)","v":"0.66","s":3,"x":false,"p":""},"F-22":{"n":"Informace o zpracování osobních údajů (zaměstnanci)","v":"0.23","s":2,"x":false,"p":""},"F-23":{"n":"Souhlas s pořizováním a zveřejňováním fotografií a videozáznamů","v":"0.4","s":2,"x":false,"p":""},"F-29":{"n":"Evidence souhlasů s fotografiemi a videozáznamy","v":"0.3","s":0,"x":true,"p":""},"ORG-07":{"n":"Depozita klientů","v":"0.5","s":3,"x":false,"p":""},"F-19":{"n":"Evidence darů","v":"0.1","s":0,"x":true,"p":""},"F-24":{"n":"Darovací smlouva","v":"0.1","s":1,"x":false,"p":""},"ORG-13":{"n":"Vzdělávání, hodnocení a supervize","v":"0.9","s":5,"x":false,"p":"Příloha A Kontrakt se supervizorem"},"F-17":{"n":"Adaptační (zaškolovací) plán nového zaměstnance","v":"0.7","s":2,"x":false,"p":""},"KLI-01":{"n":"Domácí řád","v":"0.8","s":7,"x":false,"p":"Příloha A Ve zkratce"},"SOC-10":{"n":"Nouzové a havarijní situace","v":"0.10","s":7,"x":false,"p":"Příloha P1 Záskoky"},"ZDR-03":{"n":"Hlášení mimořádných událostí","v":"0.7","s":2,"x":false,"p":""},"ZDR-04":{"n":"Prevence pádů","v":"0.8","s":3,"x":false,"p":""},"F-26":{"n":"Evidence pádů","v":"0.1","s":0,"x":true,"p":""},"SQ-14":{"n":"Krycí list SQ 14 (Nouzové a havarijní situace)","v":"0.4","s":2,"x":false,"p":""},"ORG-09":{"n":"BOZP a požární ochrana","v":"0.7","s":3,"x":false,"p":"přílohy od OZO"},"SOC-11":{"n":"Hodnocení kvality a spokojenosti","v":"0.8","s":5,"x":false,"p":""},"SOC-01":{"n":"Veřejný závazek","v":"0.9","s":4,"x":false,"p":""},"SQ-11":{"n":"Krycí list SQ 11 (Dostupnost)","v":"0.4","s":2,"x":false,"p":""},"KLI-04":{"n":"Informace o službě","v":"0.9","s":3,"x":false,"p":""},"SQ-12":{"n":"Krycí list SQ 12 (Informovanost)","v":"0.4","s":2,"x":false,"p":""},"SOC-04":{"n":"Jednání se zájemcem a odmítnutí","v":"0.7","s":4,"x":false,"p":""},"F-11":{"n":"Záznam z jednání se zájemcem o sociální službu","v":"0.3","s":1,"x":false,"p":""},"F-10":{"n":"Evidence žadatelů a odmítnutí","v":"0.1","s":0,"x":true,"p":""},"F-05":{"n":"Evidence vážně míněných nesouhlasů","v":"0.1","s":0,"x":true,"p":""},"F-01":{"n":"Žádost, vyjádření lékaře a dotazník zvyklostí","v":"0.2","s":8,"x":false,"p":""},"SQ-03":{"n":"Krycí list SQ 3 (Jednání se zájemcem)","v":"0.4","s":2,"x":false,"p":""},"SOC-05":{"n":"Smlouva s klientem","v":"0.8","s":5,"x":false,"p":""},"ORG-12":{"n":"Personální zajištění a zaškolování","v":"0.7","s":20,"x":false,"p":"Příloha A Profily pozic"},"SOC-02":{"n":"Průběh poskytování služby","v":"0.9","s":7,"x":false,"p":""},"SOC-09":{"n":"Návaznost na další zdroje","v":"0.8","s":3,"x":false,"p":""},"SQ-08":{"n":"Krycí list SQ 8 (Návaznost)","v":"0.4","s":2,"x":false,"p":""},"SOC-06":{"n":"Individuální plánování","v":"0.11","s":6,"x":false,"p":""},"F-03":{"n":"Individuální plán","v":"0.6","s":3,"x":false,"p":""},"F-14":{"n":"Biografická anamnéza klienta","v":"0.1","s":1,"x":false,"p":""},"F-25":{"n":"Seznam klíčových pracovníků","v":"0.3","s":2,"x":false,"p":""},"SQ-05":{"n":"Krycí list SQ 5 (Individuální plánování)","v":"0.4","s":3,"x":false,"p":""},"SOC-07":{"n":"Dokumentace o klientech","v":"0.9","s":5,"x":false,"p":""},"SQ-06":{"n":"Krycí list SQ 6 (Dokumentace)","v":"0.5","s":2,"x":false,"p":""},"ORG-06":{"n":"Spisový a skartační řád","v":"0.9","s":5,"x":false,"p":""},"F-09":{"n":"Záznamy o činnostech zpracování","v":"0.2","s":0,"x":true,"p":""},"ZDR-02":{"n":"Zdravotnická dokumentace","v":"0.7","s":3,"x":false,"p":""},"F-32":{"n":"Určení osob pro informace o zdravotním stavu","v":"0.2","s":1,"x":false,"p":""},"F-02":{"n":"Smlouva o poskytnutí služby","v":"0.10","s":7,"x":false,"p":""},"SQ-04":{"n":"Krycí list SQ 4 (Smlouva)","v":"0.5","s":2,"x":false,"p":""},"ORG-01":{"n":"Organizační řád","v":"0.10","s":13,"x":false,"p":""},"SQ-09":{"n":"Krycí list SQ 9 (Personální zajištění)","v":"0.4","s":2,"x":false,"p":""},"F-15":{"n":"Hodnocení zaměstnance – sebehodnocení a záznam z pohovoru","v":"0.4","s":1,"x":false,"p":""},"F-16":{"n":"Individuální vzdělávací plán","v":"0.3","s":1,"x":false,"p":""},"SQ-10":{"n":"Krycí list SQ 10 (Profesní rozvoj)","v":"0.4","s":3,"x":false,"p":""},"ORG-04":{"n":"Mzdový předpis","v":"0.6","s":8,"x":false,"p":""},"F-28":{"n":"Výstupní list zaměstnance","v":"0.2","s":2,"x":false,"p":""},"F-13":{"n":"Registr rizik a pochybení","v":"0.2","s":2,"x":false,"p":""},"F-18":{"n":"Dotazník spokojenosti pro rodinu a blízké","v":"0.2","s":1,"x":false,"p":""},"SQ-15":{"n":"Krycí list SQ 15 (Zvyšování kvality)","v":"0.4","s":3,"x":false,"p":""},"ORG-10":{"n":"Provozně-technické směrnice","v":"0.4","s":3,"x":false,"p":""},"SQ-13":{"n":"Krycí list SQ 13 (Prostředí a podmínky)","v":"0.4","s":2,"x":false,"p":""},"ORG-11":{"n":"Provozní řád","v":"0.95","s":19,"x":false,"p":"Přílohy B a C"},"ZDR-05":{"n":"Hygienická péče o klienty","v":"0.6","s":2,"x":false,"p":""},"ORG-03":{"n":"Pracovní řád","v":"0.5","s":13,"x":false,"p":"Příloha A Etický kodex"},"SOC-12":{"n":"Pracovní postupy přímé péče","v":"0.2","s":5,"x":false,"p":""},"PP-13":{"n":"Kontakt s rodinou a okolím","v":"0.2","s":3,"x":false,"p":""},"PP-14":{"n":"Aktivizační a socioterapeutické činnosti","v":"0.2","s":3,"x":false,"p":""},"PP-15":{"n":"Korespondence a osobní záležitosti klienta","v":"0.2","s":2,"x":false,"p":""},"SQ-01":{"n":"Krycí list SQ 1 (Cíle a způsoby poskytování)","v":"0.6","s":2,"x":false,"p":""},"PP-03":{"n":"Podávání jídla a pití","v":"0.1","s":2,"x":false,"p":""},"PP-04":{"n":"Ranní vstávání a večerní uléhání","v":"0.1","s":3,"x":false,"p":""},"PP-05":{"n":"Koupel, sprchování a hygiena na lůžku","v":"0.1","s":3,"x":false,"p":""},"PP-06":{"n":"Péče o vlasy, nehty a holení","v":"0.1","s":2,"x":false,"p":""},"PP-09":{"n":"Oblékání a obouvání","v":"0.2","s":2,"x":false,"p":""},"PP-07":{"n":"Vyprazdňování, inkontinence a sběrný sáček","v":"0.1","s":3,"x":false,"p":""},"PP-08":{"n":"Péče o pokožku a drobná poranění","v":"0.1","s":2,"x":false,"p":""},"PP-10":{"n":"Přesuny, polohování, pohyb a kompenzační pomůcky","v":"0.2","s":3,"x":false,"p":""},"PP-11":{"n":"Sledování stavu klienta a hlášení změn","v":"0.2","s":3,"x":false,"p":""},"PP-12":{"n":"Komunikace s klientem s poruchou sluchu, zraku a řeči","v":"0.1","s":3,"x":false,"p":""},"PP-01":{"n":"Úklid pokoje a osobní věci klienta","v":"0.1","s":2,"x":false,"p":""},"PP-02":{"n":"Osobní prádlo klienta","v":"0.1","s":2,"x":false,"p":""},"ZDR-01":{"n":"Podávání léčiv","v":"0.4","s":13,"x":false,"p":""},"F-27":{"n":"Evidence návykových látek","v":"0.1","s":0,"x":true,"p":""},"ZDR-06":{"n":"Prevence dekubitů","v":"0.6","s":2,"x":false,"p":""},"ZDR-07":{"n":"Stravování a nutriční péče","v":"0.7","s":3,"x":false,"p":""},"ZDR-08":{"n":"Paliativní péče a úmrtí","v":"0.6","s":3,"x":false,"p":""},"ZDR-09":{"n":"Ošetřovatelské standardy","v":"0.3","s":5,"x":false,"p":"Příloha A Osnova"},"OS-01":{"n":"Měření fyziologických funkcí","v":"0.2","s":3,"x":false,"p":""},"OS-02":{"n":"Odběr žilní krve","v":"0.1","s":3,"x":false,"p":""},"OS-03":{"n":"Měření glykémie glukometrem","v":"0.2","s":3,"x":false,"p":""},"OS-04":{"n":"Aplikace injekce do svalu","v":"0.1","s":3,"x":false,"p":""},"OS-05":{"n":"Aplikace injekce pod kůži","v":"0.2","s":3,"x":false,"p":""},"OS-11":{"n":"Léky do oka, ucha a nosu","v":"0.2","s":3,"x":false,"p":""},"OS-06":{"n":"Převazy a péče o rány","v":"0.1","s":3,"x":false,"p":""},"OS-12":{"n":"Bandáže dolních končetin","v":"0.2","s":3,"x":false,"p":""},"OS-10":{"n":"Péče o stomie","v":"0.1","s":3,"x":false,"p":""},"OS-07":{"n":"Péče o permanentní močový katétr","v":"0.2","s":3,"x":false,"p":""},"OS-08":{"n":"Péče o PEG a výživa sondou","v":"0.1","s":3,"x":false,"p":""},"OS-09":{"n":"Aplikace klyzmatu","v":"0.1","s":3,"x":false,"p":""},"OS-13":{"n":"Odsávání a oxygenoterapie","v":"0.2","s":3,"x":false,"p":""},"ORG-08":{"n":"Účetní směrnice","v":"0.5","s":5,"x":false,"p":""},"F-07":{"n":"Hotovostní deník a soupis cenností","v":"0.1","s":0,"x":true,"p":""},"KLI-03":{"n":"Sazebník úhrad","v":"0.3","s":2,"x":false,"p":""}}}</script>
 <script type="module">
 const DATA = JSON.parse(document.getElementById('data').textContent);
 const FIREBASE = {"apiKey": "AIzaSyDowhduH6_0zkbfVn_VDKVS3Ztz6XJqjto", "authDomain": "oaza-luzka.firebaseapp.com", "projectId": "oaza-luzka", "storageBucket": "oaza-luzka.firebasestorage.app", "messagingSenderId": "780576871450", "appId": "1:780576871450:web:d68c472bb326e29889ada3"};
@@ -350,6 +375,8 @@ function route() {
 }
 const goHash = h => { location.hash = h; };
 const backLink = (href, label = 'Zpět') => `<a class="back" href="${href}">‹ ${label}</a>`;
+const bn = b => `Balíček ${b.n}`;
+const meta = b => { const pg = pages(b); return `${plural(b.d.length, 'dokument', 'dokumenty', 'dokumentů')}${pg ? ` · ${pg} str.` : ''}`; };
 function jardaAct(b, k) { return k === 'precteno' ? 'Pročetl jsem' : k === 'odeslano' ? `Poslal jsem ${P[b.g].d}` : 'Předal jsem ředitelce'; }
 function todo(b) {
   const k = nextStep(b), s = st(b.id);
@@ -357,6 +384,15 @@ function todo(b) {
   if (k === 'odeslano') return 'poslat ' + P[b.g].d;
   if (k === 'predano') return 'předat ředitelce';
   return '';
+}
+// dlaždice balíčku: číslo, název, rozsah a jedna stavová řádka
+function tile(b, line, cls = '', showG = false) {
+  return `<a class="item bal ${cls}" href="#b-${b.id}"><span class="txt"><span class="kick">${bn(b)}</span><b>${esc(b.t)}</b><small>${showG ? esc(P[b.g].n) + ' · ' : ''}${meta(b)}</small>${line ? `<span class="line">${line}</span>` : ''}</span><span class="arr">›</span></a>`;
+}
+function docTable(b, admin) {
+  const rows = b.d.map(c => { const d = DOCS[c] || { n: c };
+    return `<tr><td class="code">${c}</td><td>${esc(d.n)}${d.p ? `<div class="dp">včetně: ${esc(d.p)}</div>` : ''}</td>${admin ? `<td class="r v">${d.v ? 'v' + esc(d.v) : ''}</td>` : ''}<td class="r">${d.x ? 'tabulka' : d.s ? d.s + ' str.' : ''}</td></tr>`; }).join('');
+  return `<table class="dt"><thead><tr><th>Kód</th><th>Dokument</th>${admin ? '<th class="r v">Verze</th>' : ''}<th class="r">Rozsah</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 function screen() {
   const r = route(), me = S.user, admin = me === 'jarda', b = r.id && BY_ID[r.id];
@@ -378,66 +414,69 @@ function screenHome() {
   const me = S.user, list = myWaiting();
   const head = `<p class="hello">Dobrý den, ${esc(P[me].v)}.</p>`;
   if (!list.length) return `<div class="simple">${head}<div class="nothing">Teď nemáte nic ke schválení.</div></div>`;
-  return `<div class="simple">${head}<p class="lead">Ke schválení máte:</p><div class="items">${list.map(b =>
-    `<a class="item" href="#b-${b.id}"><span>${esc(b.t)}${nextStep(b) === 'predano' ? '<small>předat ředitelce</small>' : ''}</span><span class="arr">›</span></a>`).join('')}</div></div>`;
+  const lead = list.length === 1 ? 'Ke schválení máte 1 balíček:' : `Ke schválení máte ${plural(list.length, 'balíček', 'balíčky', 'balíčků')}:`;
+  return `<div class="simple">${head}<p class="lead">${lead}</p><div class="items grid">${list.map(b =>
+    tile(b, nextStep(b) === 'predano' ? 'Schváleno, předat ředitelce' : '')).join('')}</div></div>`;
 }
 function screenBal(b) {
   const k = nextStep(b), me = S.user, busy = S.busy.has(b.id) ? 'disabled' : '';
+  const head = `${backLink('#seznam')}<p class="kick">${bn(b)}</p><h2>${esc(b.t)}</h2>`;
   if (k === 'predano') {
-    return `<div class="simple scr">${backLink('#seznam')}<h2>${esc(b.t)}</h2><p>Dokumenty jste ${vb(me, 'schválil')}. Teď je předejte ředitelce.</p>
+    return `<div class="simple scr narrow">${head}<p>Dokumenty jste ${vb(me, 'schválil')}. Teď je předejte ředitelce.</p>
       <button type="button" class="bigbtn yes" data-act="predano" data-id="${b.id}" ${busy}>${vb(me, 'Předal')} jsem ředitelce</button></div>`;
   }
-  return `<div class="simple scr">${backLink('#seznam')}<h2>${esc(b.t)}</h2><ul class="doclist">${docItems(b)}</ul>
-    <button type="button" class="bigbtn yes" data-act="${k}" data-id="${b.id}" ${busy}>Schvaluji</button>
-    <a class="bigbtn no" href="#r-${b.id}">Mám připomínky</a></div>`;
+  return `<div class="simple scr">${head}<div class="split"><div class="mainc">${docTable(b, false)}</div>
+    <aside class="side"><p class="side-q">${k === 'reditelka' ? 'Souhlasíte s dokumenty?' : 'Odpovídají dokumenty tomu, jak to v domově děláme?'}</p>
+      <button type="button" class="bigbtn yes" data-act="${k}" data-id="${b.id}" ${busy}>Schvaluji</button>
+      <a class="bigbtn no" href="#r-${b.id}">Mám připomínky</a></aside></div></div>`;
 }
 function screenRet(b) {
   const busy = S.busy.has(b.id) ? 'disabled' : '';
-  return `<div class="simple scr">${backLink('#b-' + b.id)}<h2>${esc(b.t)}</h2><p>Napište, co je potřeba opravit:</p>
+  return `<div class="simple scr narrow">${backLink('#b-' + b.id)}<p class="kick">${bn(b)}</p><h2>${esc(b.t)}</h2><p>Napište, co je potřeba opravit:</p>
     <textarea id="ret-inline"></textarea>
     <button type="button" class="bigbtn go" data-send="${b.id}" ${busy}>Odeslat Jardovi</button></div>`;
 }
-const docItems = (b, more) => b.d.map(c => { const d = DOCS[c] || { n: c };
-  return `<li>${esc(d.n)}<small>${c}${more && d.v ? ' · v' + esc(d.v) : ''}${more ? (d.x ? ' · tabulka' : d.s ? ` · ${d.s} str.` : '') : ''}</small></li>`; }).join('');
-
 function screenDone(b, x) {
   const s = st(b.id), me = S.user, admin = me === 'jarda';
   const title = x === 'vraceno' ? 'Odesláno Jardovi' : x === 'predano' ? 'Předáno ředitelce' : x === 'odeslano' ? `Posláno ${P[b.g].d}` : x === 'precteno' ? 'Přečteno' : 'Schváleno';
   const canUndo = x !== 'vraceno' && s.kroky?.[x]?.u === me && lastDone(b) === x;
   const next = admin ? (holder(b) === 'jarda' ? '#b-' + b.id : S.backTo || '#ukoly') : '#seznam';
-  return `<div class="simple scr done-scr"><div class="tick">✓</div><h2>${esc(title)}</h2>
+  return `<div class="simple scr narrow done-scr"><div class="tick">✓</div><h2>${esc(title)}</h2><p class="muted">${bn(b)} · ${esc(b.t)}</p>
     <a class="bigbtn go" href="${next}">${admin ? 'Pokračovat' : 'Zpět na seznam'}</a>
     ${canUndo ? `<p class="undo"><button type="button" class="link" data-undo-simple="${b.id}" data-k="${x}">Omyl, vzít zpět</button></p>` : ''}</div>`;
 }
 
 // --- Jarda ---
 function counts() { const c = { jarda: 0, gestor: 0, red: 0, done: 0 }; for (const b of BAL) c[stage(b)]++; return c; }
+function bar(c, n) {
+  const pct = v => (v / n * 100).toFixed(2) + '%';
+  return `<div class="bar"><span class="c-done" style="width:${pct(c.done)}"></span><span class="c-red" style="width:${pct(c.red)}"></span><span class="c-gestor" style="width:${pct(c.gestor)}"></span><span class="c-jarda" style="width:${pct(c.jarda)}"></span></div>`;
+}
 function screenHomeAdmin() {
   const c = counts(), mine = myWaiting().length;
-  return `<div class="simple"><p class="hello">Dobrý den, Jardo.</p><div class="items">
-    <a class="item" href="#ukoly"><span>Moje úkoly</span><span class="cnt">${mine}</span><span class="arr">›</span></a>
-    <a class="item" href="#prehled"><span>Přehled schvalování<small>${c.done} z ${BAL.length} schváleno</small></span><span class="arr">›</span></a>
-    ${api && !api.local ? '<a class="item" href="#odkazy"><span>Odkazy pro gestory</span><span class="arr">›</span></a>' : ''}
+  return `<div class="simple"><p class="hello">Dobrý den, Jardo.</p><div class="items grid">
+    <a class="item" href="#ukoly"><span class="txt"><b>Moje úkoly</b><small>balíčky, kde jsi na řadě</small></span><span class="cnt">${mine}</span><span class="arr">›</span></a>
+    <a class="item" href="#prehled"><span class="txt"><b>Přehled schvalování</b><small>${c.done} z ${BAL.length} schváleno</small></span><span class="arr">›</span></a>
+    ${api && !api.local ? '<a class="item" href="#odkazy"><span class="txt"><b>Odkazy pro gestory</b><small>osobní odkazy do appky</small></span><span class="arr">›</span></a>' : ''}
   </div></div>`;
 }
 function screenTasks() {
   const list = myWaiting();
-  const body = list.length ? `<div class="items">${list.map(b =>
-    `<a class="item small${st(b.id).vraceno && nextStep(b) === 'precteno' ? ' warn' : ''}" href="#b-${b.id}"><span>${esc(b.t)}<small>${b.w === 'X' ? '' : b.w + ' · '}${esc(todo(b))}</small></span><span class="arr">›</span></a>`).join('')}</div>`
+  const body = list.length ? `<div class="items grid">${list.map(b => tile(b, esc(todo(b)), st(b.id).vraceno && nextStep(b) === 'precteno' ? 'warn' : '', true)).join('')}</div>`
     : '<div class="nothing">Teď na tebe nic nečeká.</div>';
   return `<div class="simple scr">${backLink('#seznam')}<h2>Moje úkoly</h2>${body}</div>`;
 }
 function screenOverview() {
-  const c = counts(), n = BAL.length, pct = v => (v / n * 100).toFixed(2) + '%';
+  const c = counts(), n = BAL.length;
   const items = WAVES.map(w => {
     const all = BAL.filter(b => b.w === w.id), done = all.filter(b => stage(b) === 'done').length;
-    return `<a class="item small" href="#v-${w.id}"><span>${w.id === 'X' ? '' : w.id + ' · '}${esc(w.t)}<small>${waveText(w, done, all.length)}</small></span><span class="arr">›</span></a>`;
+    const first = all[0].n, last = all[all.length - 1].n;
+    return `<a class="item" href="#v-${w.id}"><span class="txt"><span class="kick">${w.id === 'X' ? 'Samostatně' : 'Vlna ' + w.id} · balíčky ${first === last ? first : first + '–' + last}</span><b>${esc(w.t)}</b><small>${waveText(w, done, all.length)}</small></span><span class="arr">›</span></a>`;
   }).join('');
   return `<div class="simple scr">${backLink('#seznam')}<h2>Přehled schvalování</h2>
-    <p class="sumline"><b>${c.done} z ${n}</b> balíčků schváleno</p>
-    <div class="bar"><span class="c-done" style="width:${pct(c.done)}"></span><span class="c-red" style="width:${pct(c.red)}"></span><span class="c-gestor" style="width:${pct(c.gestor)}"></span><span class="c-jarda" style="width:${pct(c.jarda)}"></span></div>
+    <p class="sumline"><b>${c.done} z ${n}</b> balíčků schváleno</p>${bar(c, n)}
     <div class="legend"><span><i class="sw c-jarda"></i>u Jardy <b>${c.jarda}</b></span><span><i class="sw c-gestor"></i>u gestorů <b>${c.gestor}</b></span><span><i class="sw c-red"></i>u ředitelky <b>${c.red}</b></span><span><i class="sw c-done"></i>schváleno <b>${c.done}</b></span></div>
-    <div class="items">${items}</div></div>`;
+    <div class="items grid">${items}</div></div>`;
 }
 function waveText(w, done, total) {
   const v = S.vlny[w.id] || emptyVlna();
@@ -448,16 +487,16 @@ function screenWave(w) {
   const all = BAL.filter(b => b.w === w.id), done = all.filter(b => stage(b) === 'done').length;
   const v = S.vlny[w.id] || emptyVlna();
   const showMeta = w.id !== 'X' && (done === all.length || v.rozhodnuti || v.ucinnost || v.podepsano || v.seznameni);
-  const meta = showMeta ? `<div class="wave-meta" data-w="${w.id}">
+  const metaBox = showMeta ? `<div class="wave-meta" data-w="${w.id}">
       <label>Rozhodnutí č. <input type="text" data-wf="rozhodnuti" value="${esc(v.rozhodnuti)}" placeholder="${esc(w.dec)}"></label>
       <label>Účinnost od <input type="date" data-wf="ucinnost" value="${esc(v.ucinnost)}"></label>
       <label><input type="checkbox" data-wc="podepsano" ${v.podepsano ? 'checked' : ''}> Podepsáno</label>
       <label><input type="checkbox" data-wc="seznameni" ${v.seznameni ? 'checked' : ''}> Zaměstnanci seznámeni</label>
       ${w.rusi ? `<span class="rusi"><b>Ruší:</b> ${esc(w.rusi)}</span>` : ''}</div>` : '';
   const items = all.map(b => { const sg = stage(b), back = nextStep(b) === 'precteno' && st(b.id).vraceno;
-    return `<a class="item small" href="#b-${b.id}"><span>${esc(b.t)}<small><i class="sw c-${back ? 'back' : sg}"></i> ${esc(statusText(b))}</small></span><span class="arr">›</span></a>`; }).join('');
-  return `<div class="simple scr">${backLink('#prehled')}<h2>${w.id === 'X' ? '' : w.id + ' · '}${esc(w.t)}</h2>
-    <p class="muted sub">${esc(w.sq)} · ${waveText(w, done, all.length)}${w.note ? ' · ' + esc(w.note) : ''}</p>${meta}<div class="items">${items}</div></div>`;
+    return tile(b, `<i class="sw c-${back ? 'back' : sg}"></i> ${esc(statusText(b))}`, '', true); }).join('');
+  return `<div class="simple scr">${backLink('#prehled')}<p class="kick">${w.id === 'X' ? 'Samostatně' : 'Vlna ' + w.id} · ${esc(w.sq)}</p><h2>${esc(w.t)}</h2>
+    <p class="muted sub">${waveText(w, done, all.length)}${w.note ? ' · ' + esc(w.note) : ''}</p>${metaBox}<div class="items grid">${items}</div></div>`;
 }
 function screenBalAdmin(b) {
   const s = st(b.id), k = nextStep(b), h = holder(b), last = lastDone(b), busy = S.busy.has(b.id) ? 'disabled' : '';
@@ -472,18 +511,19 @@ function screenBalAdmin(b) {
     else { t = esc(stepName(b, e.k)); if (e.u !== actor(b, e.k)) t += ` (zapsal${P[e.u]?.m ? '' : 'a'} ${esc(P[e.u]?.n || '')})`; }
     return `<li><span class="d" title="${esc(full(e.t))}">${dm(e.t)}</span><span>${t}</span></li>`;
   }).join('');
-  return `<div class="simple scr">${backLink(back)}<h2>${esc(b.t)}</h2>
-    <p class="muted sub">Gestor: ${esc(P[b.g].n)} · teď: ${esc(statusText(b))}</p>
-    ${s.vraceno ? `<div class="vr"><b>Připomínka od ${esc(P[s.vraceno.u]?.g || '')}:</b> ${esc(s.vraceno.x)}</div>` : ''}
-    <ul class="doclist">${docItems(b, true)}</ul>
-    ${btn}
-    ${last ? `<p class="undo-line"><button type="button" class="link" data-undo="${last}" data-id="${b.id}" ${busy}>Vzít zpět: ${esc(stepName(b, last))}</button></p>` : ''}
-    ${hist ? `<ul class="tl">${hist}</ul>` : ''}</div>`;
+  return `<div class="simple scr">${backLink(back)}<p class="kick">${bn(b)} · ${b.w === 'X' ? 'samostatně' : 'vlna ' + b.w}</p><h2>${esc(b.t)}</h2>
+    <div class="split"><div class="mainc">
+      ${s.vraceno ? `<div class="vr"><b>Připomínka od ${esc(P[s.vraceno.u]?.g || '')}:</b> ${esc(s.vraceno.x)}</div>` : ''}
+      ${docTable(b, true)}</div>
+    <aside class="side"><p class="side-q">Gestor: <b>${esc(P[b.g].n)}</b><br>Teď: <b>${esc(statusText(b))}</b></p>
+      ${btn}
+      ${last ? `<p class="undo-line"><button type="button" class="link" data-undo="${last}" data-id="${b.id}" ${busy}>Vzít zpět: ${esc(stepName(b, last))}</button></p>` : ''}
+      ${hist ? `<ul class="tl">${hist}</ul>` : ''}</aside></div></div>`;
 }
 function screenLinks() {
   const key = ls.get(LS_KEY) || '';
   const base = location.origin + location.pathname + '#k=' + encodeURIComponent(key);
-  return `<div class="simple scr">${backLink('#seznam')}<h2>Odkazy pro gestory</h2>
+  return `<div class="simple scr narrow">${backLink('#seznam')}<h2>Odkazy pro gestory</h2>
     ${PEOPLE.map(p => `<div class="link-row"><span>${esc(P[p].n)}</span><input readonly value="${esc(base + '&u=' + p)}"><button type="button" data-copy>Kopírovat</button></div>`).join('')}
     <p class="hint" style="margin-top:12px">Kdo má odkaz, vidí celé schvalování.</p></div>`;
 }
